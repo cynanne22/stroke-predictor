@@ -4,85 +4,80 @@ import joblib
 import time
 
 # =======================
-# 1. Configuration & CSS (Medical Navy Theme)
+# 1. Configuration & CSS (Green/Olive Theme Fixed)
 # =======================
-st.set_page_config(page_title="CerebroCare", layout="centered")
+st.set_page_config(page_title="Stroke Risk Prediction", layout="centered")
 
 st.markdown("""
     <style>
-        /* Import Font */
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
-        /* -- MAIN BODY COLORS -- */
+        /* -- GLOBAL TEXT & BACKGROUND -- */
         body {
-            background-color: #0f172a; /* Dark Navy */
-            color: #e2e8f0; /* Light Gray Text */
-            font-family: 'Roboto', sans-serif;
+            background-color: #2C3930;
+            color: #DCD7C9;
+            font-family: 'Poppins', sans-serif;
         }
-        
+
         .stApp {
-            background-color: #0f172a;
+            background-color: #2C3930;
         }
 
-        /* -- TITLE STYLING -- */
-        .main-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: #38bdf8; /* Cyan/Light Blue */
-            text-align: center;
-            margin-bottom: 10px;
-            font-family: 'Roboto', sans-serif;
-        }
-        
-        h3, .stHeader, .stSubheader {
-            color: #f1f5f9 !important; /* White-ish for headers */
+        /* -- TITLES & HEADERS -- */
+        h1, h2, h3, .stTitle, .stHeader, .stSubheader {
+            color: #DCD7C9 !important; /* Memaksa warna terang */
+            font-family: 'Playfair Display', serif;
         }
 
-        /* -- INPUT FIELDS -- */
-        /* Making inputs lighter so text is readable */
-        .stSelectbox, .stNumberInput, .stTextInput>div>input {
-            background-color: #1e293b; /* Slate Blue */
-            color: white;
-            border-radius: 8px;
-            border: 1px solid #334155;
+        /* -- WIDGET LABELS (Age, Gender, etc.) -- */
+        /* Ini bagian penting agar label input terlihat */
+        .stNumberInput label p, 
+        .stSelectbox label p, 
+        .stTextInput label p {
+            color: #DCD7C9 !important;
+            font-size: 16px;
+            font-weight: 600;
         }
-        
-        /* Dropdown text fix */
-        div[data-baseweb="select"] > div {
-            background-color: #1e293b !important;
-            color: white !important;
-            border-color: #334155 !important;
+
+        /* -- INPUT BOXES & DROPDOWNS -- */
+        /* Mengubah warna kotak input agar serasi */
+        div[data-baseweb="select"] > div, 
+        div[data-baseweb="input"] > div {
+            background-color: #3F4F44 !important;
+            color: #DCD7C9 !important;
+            border: 1px solid #6E8E59 !important;
+            border-radius: 10px;
         }
-        div[data-baseweb="select"] span {
-            color: white !important;
+
+        /* Warna teks di dalam input box */
+        input[type="number"], div[data-baseweb="select"] span {
+            color: #DCD7C9 !important;
         }
-        div[data-baseweb="popover"] div {
-            background-color: #1e293b !important;
-            color: white !important;
-        }
-        
-        /* -- BUTTONS -- */
+
+        /* -- BUTTON STYLING -- */
         .stButton>button {
-            background-color: #0ea5e9; /* Sky Blue */
-            color: white;
+            background-color: #6E8E59;
+            color: #DCD7C9;
             font-size: 18px;
             padding: 12px 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             border: none;
             font-weight: 600;
             transition: 0.3s;
             width: 100%;
+            font-family: 'Poppins', sans-serif;
         }
 
         .stButton>button:hover {
-            background-color: #0284c7; /* Darker Blue */
+            background-color: #5c7749;
+            color: #fff;
         }
 
-        /* -- ALERTS -- */
+        /* -- SUCCESS/ERROR MESSAGE BOX -- */
         .stAlert {
-            background-color: #1e293b;
-            color: white;
-            border: 1px solid #334155;
+            background-color: #3F4F44;
+            color: #DCD7C9;
+            border: 1px solid #6E8E59;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -94,10 +89,10 @@ st.markdown("""
 try:
     model = joblib.load("best_model.joblib")
 except FileNotFoundError:
-    st.error("Error: 'best_model.joblib' not found.")
+    st.error("Error: 'best_model.joblib' not found. Please upload the model file.")
     st.stop()
 
-# ⚠ EXACT Training Columns (Required for the Safe Method)
+# Daftar kolom harus SAMA PERSIS dengan data training
 MODEL_COLUMNS = [
     "age", "hypertension", "heart_disease", "ever_married", "avg_glucose_level", 
     "bmi", "gender_Male", "work_type_Never_worked", "work_type_Private", 
@@ -109,15 +104,14 @@ MODEL_COLUMNS = [
 # 3. MAIN APP
 # =======================
 def main():
-    # Custom Title
-    st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
-    
+    st.title("🧠 Stroke Risk Prediction App")
+
     st.write("""
-        ### AI-Powered Stroke Risk Assessment
-        Welcome! This tool predicts the risk of stroke based on patient medical and lifestyle information.
+        Welcome!  
+        This tool predicts the *risk of stroke* based on patient medical and lifestyle information.  
         Fill out the form below to check the probability.
     """)
-    st.divider()
+    st.markdown("---")
 
     col1, col2 = st.columns(2)
 
@@ -139,51 +133,48 @@ def main():
         work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Never_worked", "children", "Govt_job"])
         avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=90.0)
 
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # =======================
     # PREDICT BUTTON
     # =======================
-    if st.button("Analyze Risk Profile"):
+    if st.button("Analyze Stroke Risk"):
         
+        # 1. Menyiapkan Data Input
+        input_dict = {
+            "age": age,
+            "hypertension": 1 if hypertension == "Yes" else 0,
+            "heart_disease": 1 if heart_disease == "Yes" else 0,
+            "ever_married": 1 if ever_married == "Yes" else 0,
+            "avg_glucose_level": avg_glucose_level,
+            "bmi": bmi,
+            "gender_Male": 1 if gender == "Male" else 0,
+            "work_type_Never_worked": 1 if work_type == "Never_worked" else 0,
+            "work_type_Private": 1 if work_type == "Private" else 0,
+            "work_type_Self-employed": 1 if work_type == "Self-employed" else 0,
+            "work_type_children": 1 if work_type == "children" else 0,
+            "Residence_type_Urban": 1 if residence == "Urban" else 0,
+            "smoking_status_formerly smoked": 1 if smoking_status == "formerly smoked" else 0,
+            "smoking_status_never smoked": 1 if smoking_status == "never smoked" else 0,
+            "smoking_status_smokes": 1 if smoking_status == "smokes" else 0,
+        }
+
+        # 2. Konversi ke DataFrame & Sesuaikan Kolom (Agar aman dari error)
+        input_df = pd.DataFrame([input_dict])
+        final_df = input_df.reindex(columns=MODEL_COLUMNS, fill_value=0)
+
+        # 3. Prediksi
         with st.spinner("Analyzing data..."):
-            time.sleep(0.5) # Aesthetic loading delay
-            
-            # 1. Create Input Dictionary
-            input_dict = {
-                "age": age,
-                "hypertension": 1 if hypertension == "Yes" else 0,
-                "heart_disease": 1 if heart_disease == "Yes" else 0,
-                "ever_married": 1 if ever_married == "Yes" else 0,
-                "avg_glucose_level": avg_glucose_level,
-                "bmi": bmi,
-                "gender_Male": 1 if gender == "Male" else 0,
-                "work_type_Never_worked": 1 if work_type == "Never_worked" else 0,
-                "work_type_Private": 1 if work_type == "Private" else 0,
-                "work_type_Self-employed": 1 if work_type == "Self-employed" else 0,
-                "work_type_children": 1 if work_type == "children" else 0,
-                "Residence_type_Urban": 1 if residence == "Urban" else 0,
-                "smoking_status_formerly smoked": 1 if smoking_status == "formerly smoked" else 0,
-                "smoking_status_never smoked": 1 if smoking_status == "never smoked" else 0,
-                "smoking_status_smokes": 1 if smoking_status == "smokes" else 0,
-            }
-
-            # 2. Convert to DataFrame & Reindex (Safety Step)
-            input_df = pd.DataFrame([input_dict])
-            final_df = input_df.reindex(columns=MODEL_COLUMNS, fill_value=0)
-
-            # 3. Predict
+            time.sleep(0.5) # Efek visual loading
             prediction = model.predict(final_df)[0]
             probability = model.predict_proba(final_df)[0][1]
 
-            st.subheader("Assessment Result")
+        st.subheader("Prediction Result")
 
-            if prediction == 1:
-                st.error(f"⚠ High Stroke Risk Detected\n\nProbability: {probability:.2%}")
-                st.write("Please consult a medical professional immediately.")
-            else:
-                st.success(f"🟢 Low Stroke Risk Detected\n\nProbability: {probability:.2%}")
-                st.write("Your metrics are within a safe range. Maintain a healthy lifestyle.")
+        if prediction == 1:
+            st.error(f"⚠ High Stroke Risk\n\nProbability: {probability:.2%}")
+        else:
+            st.success(f"🟢 Low Stroke Risk\n\nProbability: {probability:.2%}")
 
 if __name__ == "__main__":
     main()
