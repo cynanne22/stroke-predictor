@@ -34,12 +34,22 @@ st.markdown("""
             font-family: 'Roboto', sans-serif;
         }
         
+        /* -- SUBTITLES (Patient Info, Medical History) -- */
         h3, .stHeader, .stSubheader {
-            color: #f1f5f9 !important; /* White-ish for headers */
+            color: #f1f5f9 !important; /* White-ish color */
+        }
+
+        /* -- WIDGET LABELS (Age, Gender, Hypertension, etc.) -- */
+        /* Forces these labels to match the subtitle color exactly (#f1f5f9) */
+        .stNumberInput label, 
+        .stSelectbox label, 
+        .stTextInput label,
+        div[data-testid="stWidgetLabel"] p {
+            color: #f1f5f9 !important; /* MATCHING SUBTITLES */
+            font-size: 16px !important;
         }
 
         /* -- INPUT FIELDS -- */
-        /* Making inputs lighter so text is readable */
         .stSelectbox, .stNumberInput, .stTextInput>div>input {
             background-color: #1e293b; /* Slate Blue */
             color: white;
@@ -97,7 +107,7 @@ except FileNotFoundError:
     st.error("Error: 'best_model.joblib' not found.")
     st.stop()
 
-# ⚠ EXACT Training Columns (Required for the Safe Method)
+# ⚠ EXACT Training Columns
 MODEL_COLUMNS = [
     "age", "hypertension", "heart_disease", "ever_married", "avg_glucose_level", 
     "bmi", "gender_Male", "work_type_Never_worked", "work_type_Private", 
@@ -144,7 +154,7 @@ def main():
     # =======================
     # PREDICT BUTTON
     # =======================
-    if st.button("Analyze Risk Profile"):
+    if st.button("Analyze Stroke Risk"):
         
         with st.spinner("Analyzing data..."):
             time.sleep(0.5) # Aesthetic loading delay
