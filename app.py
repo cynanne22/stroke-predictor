@@ -4,7 +4,7 @@ import joblib
 import time
 
 # =======================
-# 1. Configuration & CSS (Medical Navy Theme)
+# 1. Configuration & CSS (High Contrast Sidebar)
 # =======================
 st.set_page_config(page_title="CerebroCare", layout="centered")
 
@@ -13,7 +13,7 @@ st.markdown("""
         /* Import Font */
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-        /* -- Background & Text Colors (Medical Navy Theme) -- */
+        /* -- MAIN BODY -- */
         body {
             background-color: #0f172a; /* Dark Navy */
             color: #e2e8f0; /* Light Gray Text */
@@ -24,11 +24,45 @@ st.markdown("""
             background-color: #0f172a;
         }
 
-        /* -- Title Styling -- */
+        /* -- SIDEBAR STYLING (NEW) -- */
+        section[data-testid="stSidebar"] {
+            background-color: #1e293b; /* Lighter Slate Blue for Sidebar */
+            border-right: 1px solid #334155;
+        }
+        
+        /* Force all text in sidebar to be white/light */
+        section[data-testid="stSidebar"] h1, 
+        section[data-testid="stSidebar"] h2, 
+        section[data-testid="stSidebar"] h3, 
+        section[data-testid="stSidebar"] label, 
+        section[data-testid="stSidebar"] .stMarkdown {
+            color: #f1f5f9 !important;
+        }
+
+        /* -- NAVIGATION DROPDOWN (Selectbox) -- */
+        /* This targets the box itself to make it visible */
+        div[data-baseweb="select"] > div {
+            background-color: #334155 !important; /* Lighter box color */
+            border-color: #475569 !important;
+            color: white !important;
+        }
+        
+        /* Fix the text color inside the dropdown */
+        div[data-baseweb="select"] span {
+            color: white !important;
+        }
+        
+        /* Fix the dropdown popup menu colors */
+        div[data-baseweb="popover"] div {
+            background-color: #334155 !important;
+            color: white !important;
+        }
+
+        /* -- MAIN TITLE -- */
         .main-title {
             font-size: 3.5rem;
             font-weight: 700;
-            color: #38bdf8; /* Light Blue / Cyan */
+            color: #38bdf8; /* Cyan */
             text-align: center;
             margin-bottom: 10px;
             font-family: 'Roboto', sans-serif;
@@ -41,52 +75,30 @@ st.markdown("""
             margin-bottom: 40px;
         }
 
-        /* -- Headers -- */
-        h1, h2, h3, .stHeader, .stSubheader {
-            color: #f1f5f9 !important;
-            font-family: 'Roboto', sans-serif;
+        /* -- INPUT FIELDS (Main Page) -- */
+        .stNumberInput input, .stTextInput input {
+            background-color: #1e293b !important;
+            color: white !important;
+            border: 1px solid #334155 !important;
         }
-
-        /* -- Custom Buttons -- */
+        
+        /* -- BUTTONS -- */
         .stButton>button {
-            background-color: #0ea5e9; /* Sky Blue */
+            background-color: #0ea5e9;
             color: white;
-            font-size: 18px;
-            padding: 10px 24px;
             border-radius: 8px;
             border: none;
+            padding: 10px 24px;
             font-weight: 600;
-            width: 100%;
             transition: 0.3s;
         }
-
         .stButton>button:hover {
-            background-color: #0284c7; /* Darker Blue on Hover */
-        }
-
-        /* -- Input Fields Styling -- */
-        .stSelectbox, .stNumberInput, .stTextInput>div>input {
-            background-color: #1e293b; /* Slate Blue */
-            color: white;
-            border-radius: 8px;
-            border: 1px solid #334155;
+            background-color: #0284c7;
         }
         
-        /* -- Selectbox Dropdown Text -- */
-        .stSelectbox div[data-baseweb="select"] > div {
-            background-color: #1e293b;
-            color: white;
-        }
-        
-        /* -- Metrics & Success/Error -- */
+        /* -- METRICS -- */
         div[data-testid="stMetricValue"] {
             color: #38bdf8;
-        }
-        
-        .stAlert {
-            background-color: #1e293b;
-            color: white;
-            border: 1px solid #334155;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -100,8 +112,7 @@ except FileNotFoundError:
     st.error("Error: 'best_model.joblib' not found. Please upload it.")
     st.stop()
 
-# ⚠ CRITICAL: This list must match your training data columns EXACTLY.
-# If your model was trained with different columns, update this list.
+# ⚠ MUST MATCH TRAINING DATA EXACTLY
 MODEL_COLUMNS = [
     "age", "hypertension", "heart_disease", "ever_married", "avg_glucose_level", 
     "bmi", "gender_Male", "work_type_Never_worked", "work_type_Private", 
@@ -110,7 +121,7 @@ MODEL_COLUMNS = [
 ]
 
 # =======================
-# 3. Session State (Navigation Memory)
+# 3. Session State
 # =======================
 if 'prediction_done' not in st.session_state:
     st.session_state['prediction_done'] = False
@@ -124,7 +135,6 @@ if 'prediction_proba' not in st.session_state:
 # =======================
 # 4. Page Functions
 # =======================
-
 def show_home():
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-title">AI-Powered Stroke Risk Assessment</div>', unsafe_allow_html=True)
@@ -133,7 +143,7 @@ def show_home():
     st.write("""
     **CerebroCare** is an advanced tool designed to predict stroke probability based on patient medical history and lifestyle factors.
     
-    Use the sidebar menu or click below to start an assessment.
+    Use the sidebar menu **(left)** to navigate or click below to start.
     """)
     
     if st.button("Start Assessment"):
@@ -146,32 +156,28 @@ def show_prediction():
     
     col1, col2 = st.columns(2)
 
-    # ===== Left column =====
     with col1:
         st.subheader("Patient Info")
-        age = st.number_input("Age", min_value=0, max_value=120, value=30)
+        age = st.number_input("Age", 0, 120, 30)
         gender = st.selectbox("Gender", ["Male", "Female"])
         ever_married = st.selectbox("Ever Married?", ["Yes", "No"])
         residence = st.selectbox("Residence Type", ["Urban", "Rural"])
-        bmi = st.number_input("BMI", min_value=0.0, value=25.0)
+        bmi = st.number_input("BMI", 0.0, 100.0, 25.0)
 
-    # ===== Right column =====
     with col2:
         st.subheader("Medical History")
         hypertension = st.selectbox("Hypertension", ["Yes", "No"])
         heart_disease = st.selectbox("Heart Disease", ["Yes", "No"])
         smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
         work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Never_worked", "children", "Govt_job"])
-        avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=90.0)
+        avg_glucose_level = st.number_input("Average Glucose Level", 0.0, 300.0, 90.0)
 
     st.markdown("---")
 
-    # ===== Prediction Logic =====
     if st.button("Analyze Risk Profile"):
         with st.spinner("Processing data..."):
-            time.sleep(1) # Simulated loading effect
+            time.sleep(1)
             
-            # 1. Create Input Dictionary
             input_dict = {
                 "age": age,
                 "hypertension": 1 if hypertension == "Yes" else 0,
@@ -190,15 +196,12 @@ def show_prediction():
                 "smoking_status_smokes": 1 if smoking_status == "smokes" else 0,
             }
 
-            # 2. Convert to Safe DataFrame (Prevents Column Mismatch Crashes)
             input_df = pd.DataFrame([input_dict])
             final_df = input_df.reindex(columns=MODEL_COLUMNS, fill_value=0)
 
-            # 3. Predict
             prediction = model.predict(final_df)[0]
             probability = model.predict_proba(final_df)[0][1]
 
-            # 4. Save to Session State & Navigate
             st.session_state['prediction_result'] = prediction
             st.session_state['prediction_proba'] = probability
             st.session_state['prediction_done'] = True
@@ -232,17 +235,15 @@ def show_result():
         st.rerun()
 
 # =======================
-# 5. Main Navigation Controller
+# 5. Main Navigation
 # =======================
 def main():
-    # Sidebar Navigation
     st.sidebar.header("Navigation")
     
     menu_options = ["Home", "Prediction"]
     if st.session_state['prediction_done']:
         menu_options.append("Analysis Result")
     
-    # Using Key to auto-update session state
     selection = st.sidebar.selectbox("Go to", menu_options, key='current_page')
 
     if selection == "Home":
