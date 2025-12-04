@@ -162,6 +162,6 @@ def main():
             st.success(f"🟢 Low Stroke Risk\nProbability: {probability:.2%}")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
 
