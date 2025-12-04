@@ -119,6 +119,15 @@ MODEL_COLUMNS = [
 # 3. MAIN APP
 # =======================
 def main():
+    # --- NEW CODE: ADD LOGO ---
+    # Create 3 columns to center the image in the middle column
+    col1, col2, col3 = st.columns([1, 2, 1]) 
+    
+    with col2:
+        # Replace 'brain_logo.png' with your actual file name
+        st.image("cerebrocarelogo.png", use_column_width=True) 
+    # --------------------------
+    
     # Custom Title
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
