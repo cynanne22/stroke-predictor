@@ -25,22 +25,22 @@ st.markdown("""
 
         /* -- TITLES & HEADERS -- */
         h1, h2, h3, .stTitle, .stHeader, .stSubheader {
-            color: #DCD7C9 !important; /* Memaksa warna terang */
+            color: #DCD7C9 !important;
             font-family: 'Playfair Display', serif;
         }
 
         /* -- WIDGET LABELS (Age, Gender, etc.) -- */
-        /* Ini bagian penting agar label input terlihat */
-        .stNumberInput label p, 
-        .stSelectbox label p, 
-        .stTextInput label p {
+        /* UPDATE: Selector ini diperbaiki agar label benar-benar terlihat */
+        .stNumberInput label, 
+        .stSelectbox label, 
+        .stTextInput label,
+        div[data-testid="stWidgetLabel"] p {
             color: #DCD7C9 !important;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 16px !important;
+            font-weight: 600 !important;
         }
 
         /* -- INPUT BOXES & DROPDOWNS -- */
-        /* Mengubah warna kotak input agar serasi */
         div[data-baseweb="select"] > div, 
         div[data-baseweb="input"] > div {
             background-color: #3F4F44 !important;
@@ -49,9 +49,14 @@ st.markdown("""
             border-radius: 10px;
         }
 
-        /* Warna teks di dalam input box */
+        /* Warna teks input angka dan pilihan dropdown */
         input[type="number"], div[data-baseweb="select"] span {
             color: #DCD7C9 !important;
+        }
+        
+        /* Warna ikon panah dropdown */
+        div[data-baseweb="select"] svg {
+            fill: #DCD7C9 !important;
         }
 
         /* -- BUTTON STYLING -- */
@@ -138,6 +143,7 @@ def main():
     # =======================
     # PREDICT BUTTON
     # =======================
+    # Text tombol sudah diubah sesuai permintaan
     if st.button("Analyze Stroke Risk"):
         
         # 1. Menyiapkan Data Input
