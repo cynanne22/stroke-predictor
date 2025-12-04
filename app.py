@@ -1,86 +1,157 @@
 import streamlit as st
-import time
+import numpy as np
+import pandas as pd
+import pickle
+import joblib
 
-# ==========================================
-# 1. SETUP SESSION STATE (INGATAN APLIKASI)
-# ==========================================
-# Kita butuh variabel untuk ingat apakah user sudah klik predict atau belum
-if 'prediction_done' not in st.session_state:
-    st.session_state['prediction_done'] = False
+# =======================
+# Custom Dark Theme CSS
+# =======================
+st.markdown("""
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
-# Kita butuh variabel untuk tahu kita sedang di halaman mana
-if 'current_page' not in st.session_state:
-    st.session_state['current_page'] = "Home Page"
+        body {
+            background-color: #2C3930;
+            color: #DCD7C9;
+            font-family: 'Poppins', sans-serif;
+        }
 
-# ==========================================
-# 2. FUNGSI UNTUK SETIAP HALAMAN
-# ==========================================
-def show_home():
-    st.title("🏠 Home Page")
-    st.write("Selamat datang di aplikasi Stroke Prediction.")
+        .stApp {
+            background-color: #2C3930;
+        }
 
-def show_prediction():
-    st.title("🔮 Prediction Page")
-    st.write("Silakan masukkan data pasien di sini.")
-    
-    # Simulasi input
-    age = st.number_input("Umur", 20, 90)
-    
-    if st.button("Predict Result"):
-        # Simulasi proses loading
-        with st.spinner("Sedang memprediksi..."):
-            time.sleep(1) # Ceritanya lagi mikir
-            
-        # --- LOGIKA KUNCI DI SINI ---
-        # 1. Tandai bahwa prediksi sudah selesai
-        st.session_state['prediction_done'] = True
-        
-        # 2. Paksa pindah halaman ke 'Personalized Result'
-        st.session_state['current_page'] = "Personalized Result"
-        
-        # 3. Rerun agar aplikasi refresh dan langsung pindah
-        st.rerun()
+        .stTitle {
+            color: #DCD7C9;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+        }
 
-def show_result():
-    st.title("📄 Personalized Result")
-    st.success("Risiko Stroke: RENDAH")
-    st.write("Berdasarkan data Anda, berikut adalah saran kesehatan khusus...")
-    st.info("Tab ini hanya muncul karena kamu sudah melakukan prediksi!")
-    
-    if st.button("Kembali ke Prediksi"):
-        st.session_state['current_page'] = "Prediction"
-        st.rerun()
+        h3, .stHeader, .stSubheader {
+            color: #DCD7C9;
+            font-family: 'Poppins', sans-serif;
+        }
 
-# ==========================================
-# 3. LOGIKA NAVIGASI (DINAMIS)
-# ==========================================
+        .stButton>button {
+            background-color: #6E8E59;
+            color: #DCD7C9;
+            font-size: 18px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
 
-# Tentukan opsi menu apa saja yang boleh muncul
-# Awalnya cuma 2 menu
-menu_options = ["Home Page", "Prediction"]
+        .stButton>button:hover {
+            background-color: #5c7749;
+        }
 
-# Jika prediksi sudah done, tambahkan menu ke-3
-if st.session_state['prediction_done']:
-    menu_options.append("Personalized Result")
+        .stSelectbox, .stNumberInput, .stTextInput>div>input {
+            background-color: #3F4F44;
+            color: #DCD7C9;
+            border-radius: 10px;
+            border: 1px solid #6E8E59;
+            padding: 8px;
+            font-size: 16px;
+        }
 
-# --- SIDEBAR / NAVIGATION ---
-st.sidebar.header("Navigasi")
+        .stSelectbox>div, .stNumberInput>div {
+            font-weight: 600;
+            color: #DCD7C9;
+        }
 
-# Widget Selectbox harus sinkron dengan session_state['current_page']
-# key='current_page' artinya nilai selectbox ini akan otomatis
-# mengupdate st.session_state['current_page'] dan sebaliknya.
-selection = st.sidebar.selectbox(
-    "Pilih Halaman:",
-    options=menu_options,
-    key='current_page' 
-)
+        .stMarkdown, .stWrite, .stText {
+            font-size: 17px;
+            line-height: 1.6;
+            color: #DCD7C9;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-# ==========================================
-# 4. RENDER HALAMAN SESUAI PILIHAN
-# ==========================================
-if selection == "Home Page":
-    show_home()
-elif selection == "Prediction":
-    show_prediction()
-elif selection == "Personalized Result":
-    show_result()
+
+# =======================
+# Load Trained Model
+# =======================
+model = joblib.load("best_model.joblib")
+
+
+# =======================
+# MAIN APP
+# =======================
+def main():
+    st.title("🧠 Stroke Risk Prediction App")
+
+    st.write("""
+        Welcome!  
+        This tool predicts the *risk of stroke* based on patient medical and lifestyle information.  
+        Fill out the form below to check the probability.
+    """)
+
+    col1, col2 = st.columns(2)
+
+    # ===== Left column =====
+    with col1:
+        st.subheader("Patient Info")
+        age = st.number_input("Age", min_value=0, max_value=120, value=30)
+
+        gender = st.selectbox("Gender", ["Male", "Female"])
+        ever_married = st.selectbox("Ever Married?", ["Yes", "No"])
+        residence = st.selectbox("Residence Type", ["Urban", "Rural"])
+
+        bmi = st.number_input("BMI", min_value=0.0, value=25.0)
+
+    # ===== Right column =====
+    with col2:
+        st.subheader("Medical History")
+        hypertension = st.selectbox("Hypertension", ["Yes", "No"])
+        heart_disease = st.selectbox("Heart Disease", ["Yes", "No"])
+        smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes"])
+        work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Never_worked", "children"])
+
+        avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=90.0)
+
+
+    # =======================
+    # Convert Input to Model Features
+    # =======================
+    input_dict = {
+        "age": age,
+        "hypertension": 1 if hypertension == "Yes" else 0,
+        "heart_disease": 1 if heart_disease == "Yes" else 0,
+        "ever_married": 1 if ever_married == "Yes" else 0,
+        "avg_glucose_level": avg_glucose_level,
+        "bmi": bmi,
+        "gender_Male": 1 if gender == "Male" else 0,
+        "work_type_Never_worked": 1 if work_type == "Never_worked" else 0,
+        "work_type_Private": 1 if work_type == "Private" else 0,
+        "work_type_Self-employed": 1 if work_type == "Self-employed" else 0,
+        "work_type_children": 1 if work_type == "children" else 0,
+        "Residence_type_Urban": 1 if residence == "Urban" else 0,
+        "smoking_status_formerly smoked": 1 if smoking_status == "formerly smoked" else 0,
+        "smoking_status_never smoked": 1 if smoking_status == "never smoked" else 0,
+        "smoking_status_smokes": 1 if smoking_status == "smokes" else 0,
+    }
+
+    final_input = np.array(list(input_dict.values())).reshape(1, -1)
+
+    # =======================
+    # PREDICT BUTTON
+    # =======================
+    if st.button("Predict Stroke Risk"):
+        prediction = model.predict(final_input)[0]
+        probability = model.predict_proba(final_input)[0][1]
+
+        st.subheader("Prediction Result")
+
+        if prediction == 1:
+            st.error(f"⚠ High Stroke Risk\nProbability: {probability:.2%}")
+        else:
+            st.success(f"🟢 Low Stroke Risk\nProbability: {probability:.2%}")
+
+
+if __name__ == "__main__":
+    main()
