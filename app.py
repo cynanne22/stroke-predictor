@@ -124,8 +124,8 @@ def main():
     # col1, col2, col3 = st.columns([1, 2, 1]) 
     
     # with col2:
-    #     # Replace 'brain_logo.png' with your actual file name
-    #     st.image("cerebrocarelogo.png", use_column_width=True) 
+    #      # Replace 'brain_logo.png' with your actual file name
+    #      st.image("cerebrocarelogo.png", use_column_width=True) 
     # # --------------------------
     
     # Custom Title
@@ -138,26 +138,35 @@ def main():
     """)
     st.divider()
 
-    col1, col2 = st.columns(2)
+    # ==========================================
+    # BAGIAN 1: PATIENT INFO (Sekarang di atas)
+    # ==========================================
+    st.subheader("Patient Info")
+    
+    # Input field disusun vertikal
+    age = st.number_input("Age", min_value=0, max_value=120, value=30)
+    gender = st.selectbox("Gender", ["Male", "Female"])
+    ever_married = st.selectbox("Ever Married?", ["Yes", "No"])
+    residence = st.selectbox("Residence Type", ["Urban", "Rural"])
+    bmi = st.number_input("BMI", min_value=0.0, value=25.0)
 
-    # ===== Left column =====
-    with col1:
-        st.subheader("Patient Info")
-        age = st.number_input("Age", min_value=0, max_value=120, value=30)
-        gender = st.selectbox("Gender", ["Male", "Female"])
-        ever_married = st.selectbox("Ever Married?", ["Yes", "No"])
-        residence = st.selectbox("Residence Type", ["Urban", "Rural"])
-        bmi = st.number_input("BMI", min_value=0.0, value=25.0)
+    # Pemisah visual antar bagian
+    st.markdown("<br>", unsafe_allow_html=True) 
+    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    # ===== Right column =====
-    with col2:
-        st.subheader("Medical History")
-        hypertension = st.selectbox("Hypertension", ["Yes", "No"])
-        heart_disease = st.selectbox("Heart Disease", ["Yes", "No"])
-        smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
-        work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Never_worked", "children", "Govt_job"])
-        avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=90.0)
+    # ==========================================
+    # BAGIAN 2: MEDICAL HISTORY (Sekarang di bawah)
+    # ==========================================
+    st.subheader("Medical History")
+    
+    hypertension = st.selectbox("Hypertension", ["Yes", "No"])
+    heart_disease = st.selectbox("Heart Disease", ["Yes", "No"])
+    smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
+    work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Never_worked", "children", "Govt_job"])
+    avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=90.0)
 
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("---")
 
     # =======================
