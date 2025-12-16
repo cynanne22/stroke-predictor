@@ -71,58 +71,51 @@ st.markdown("""
            CUSTOM INPUT BOX STYLING
         ---------------------------------------------------- */
         
-        /* Reset background container */
         .stSelectbox, .stNumberInput, .stTextInput {
             background-color: transparent !important;
             border: none !important;
         }
 
-        /* 1. Box Dropdown & Input */
+        /* 1. Box Dropdown & Input Container */
         div[data-baseweb="select"] > div, 
         div[data-baseweb="input"] {
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
-            color: white !important; /* Warna teks yang sudah diketik/dipilih */
+            /* REVISI: Mengubah warna teks utama dalam box menjadi Abu Terang (#94a3b8) 
+               agar "Select Gender" warnanya sama dengan "e.g. 45" */
+            color: #94a3b8 !important; 
         }
 
-        /* 2. REVISI: Placeholder Text (e.g. 45, Select Gender) 
-           Warna Abu Terang (#94a3b8) - Terlihat jelas tapi beda dgn Label */
+        /* 2. Warna Panah Dropdown (Arrow) - PUTIH (Sama kayak + -) */
+        div[data-baseweb="select"] svg {
+            fill: white !important;
+        }
         
-        /* Untuk Input Angka (NumberInput) */
+        /* 3. Placeholder Text untuk Input Angka (e.g. 45) */
         input::placeholder {
             color: #94a3b8 !important;
             opacity: 1 !important; 
         }
         
-        /* Untuk Dropdown (Selectbox) - Placeholder text */
+        /* 4. Memastikan teks di dalam Dropdown (baik placeholder maupun nilai) berwarna konsisten */
         div[data-baseweb="select"] span {
-            color: #94a3b8 !important; /* Warna default (placeholder) */
+            color: #94a3b8 !important; 
         }
         
-        /* Memastikan nilai yang DIPILIH di dropdown berwarna PUTIH (bukan abu) */
-        div[data-baseweb="select"] div[aria-selected="true"] span {
-            color: white !important;
-        }
-
-        /* 3. REVISI: Warna Panah Dropdown (Arrow)
-           Disamakan dengan warna ikon +/- yaitu Putih/Terang */
-        div[data-baseweb="select"] svg {
-            fill: #e2e8f0 !important;
-        }
-
-        /* Styling internal input box */
+        /* Styling internal input box (search text di dropdown) */
         div[data-baseweb="input"] > div {
             background-color: transparent !important;
             color: white !important;
         }
         
+        /* Text angka yang diketik manual (agar tetap putih saat ngetik) */
         input[class] {
             color: white !important;
             background-color: transparent !important;
         }
 
-        /* Dropdown Popover (Pilihan Menu) */
+        /* Dropdown Popover (Pilihan Menu saat diklik) */
         div[data-baseweb="popover"] div {
             background-color: #1e293b !important;
             color: white !important;
@@ -171,7 +164,7 @@ MODEL_COLUMNS = [
     "smoking_status_formerly smoked", "smoking_status_never smoked", "smoking_status_smokes"
 ]
 
-# --- MAPPING: Tampilan Rapi -> Data Asli Model ---
+# --- MAPPING ---
 WORK_TYPE_MAP = {
     "Private Sector": "Private",
     "Self Employed": "Self-employed",
@@ -212,7 +205,7 @@ def main():
     # TAB 1: HOME PAGE
     # ----------------------------------------------------
     with tab1:
-        st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='border: 1px solid #334155; margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         st.subheader("About Stroke")
         st.write("""
         A stroke occurs when blood supply to part of the brain is blocked or a blood vessel bursts. 
@@ -229,15 +222,21 @@ def main():
     # TAB 2: PREDICTION
     # ----------------------------------------------------
     with tab2:
+        st.markdown(
+            """
+            <p style='color: #cbd5e1; font-size: 16px; margin-top: 10px; margin-bottom: 10px; text-align: center;'>
+            Fill out the patient details below to analyze the risk profile.
+            </p>
+            """, 
+            unsafe_allow_html=True
+        )
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
-        # --- INPUT FORM (DEFAULT EMPTY) ---
+        # --- INPUT FORM ---
         st.subheader("Patient Info")
         
-        # NOTE: value=None makes it empty, placeholder shows text hint
         age = st.number_input("Age", min_value=0, max_value=120, value=None, placeholder="e.g. 45")
         
-        # NOTE: index=None makes dropdown empty/unselected
         gender = st.selectbox("Gender", ["Male", "Female"], index=None, placeholder="Select Gender")
         ever_married = st.selectbox("Ever Married?", ["Yes", "No"], index=None, placeholder="Select Status")
         residence = st.selectbox("Residence Type", ["Urban", "Rural"], index=None, placeholder="Select Residence Type")
@@ -255,22 +254,19 @@ def main():
         # --- PREDICT BUTTON ---
         if st.button("Analyze Stroke Risk"):
             
-            # 1. VALIDATION CHECK (PENTING!)
-            # Cek apakah ada input yang masih kosong (None)
+            # VALIDATION
             required_fields = [age, gender, ever_married, residence, bmi, hypertension, heart_disease, smoking_display, work_display, avg_glucose_level]
             
             if None in required_fields:
                 st.error("⚠ Please fill out all fields before analyzing.")
             else:
-                # Jika semua terisi, baru jalankan proses prediksi
                 with st.spinner("Analyzing data..."):
                     time.sleep(0.5) 
                     
-                    # Konversi Pilihan Tampilan -> Nilai Asli Dataset
+                    # Mapping & Predict
                     raw_work_type = WORK_TYPE_MAP[work_display]
                     raw_smoking_status = SMOKING_MAP[smoking_display]
 
-                    # Create Input Dictionary
                     input_dict = {
                         "age": age,
                         "hypertension": 1 if hypertension == "Yes" else 0,
@@ -279,14 +275,11 @@ def main():
                         "avg_glucose_level": avg_glucose_level,
                         "bmi": bmi,
                         "gender_Male": 1 if gender == "Male" else 0,
-                        
                         "work_type_Never_worked": 1 if raw_work_type == "Never_worked" else 0,
                         "work_type_Private": 1 if raw_work_type == "Private" else 0,
                         "work_type_Self-employed": 1 if raw_work_type == "Self-employed" else 0,
                         "work_type_children": 1 if raw_work_type == "children" else 0,
-                        
                         "Residence_type_Urban": 1 if residence == "Urban" else 0,
-                        
                         "smoking_status_formerly smoked": 1 if raw_smoking_status == "formerly smoked" else 0,
                         "smoking_status_never smoked": 1 if raw_smoking_status == "never smoked" else 0,
                         "smoking_status_smokes": 1 if raw_smoking_status == "smokes" else 0,
@@ -328,7 +321,6 @@ def main():
     # TAB 3: PERSONALIZED RESULT
     # ----------------------------------------------------
     with tab3:
-        st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         st.subheader("Personalized Insights")
         
         if st.session_state['prediction_done']:
