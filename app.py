@@ -30,15 +30,18 @@ st.markdown("""
             font-weight: 700;
             color: #38bdf8; /* Cyan/Light Blue */
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* Jarak judul utama ke bawah dikurangi */
             font-family: 'Roboto', sans-serif;
         }
         
-        /* -- SUBHEADERS -- */
+        /* -- SUBHEADERS (Patient Info, Medical History) -- */
         h3, .stHeader, .stSubheader {
             color: #f1f5f9 !important; /* White-ish color */
-            margin-top: 20px;
-            background-color: transparent !important; /* Pastikan tidak ada box background */
+            font-size: 1.5rem !important;
+            font-weight: 600 !important;
+            margin-top: 40px !important; /* REVISI 3: Memberi jarak lebih antar section */
+            margin-bottom: 10px !important;
+            background-color: transparent !important;
         }
 
         /* -- WIDGET LABELS -- */
@@ -48,54 +51,51 @@ st.markdown("""
         div[data-testid="stWidgetLabel"] p {
             color: #f1f5f9 !important;
             font-size: 16px !important;
-            margin-bottom: 5px; /* Jarak antara label dan kotak input */
+            margin-bottom: 5px;
         }
 
         /* ----------------------------------------------------
-           PERBAIKAN CSS DI SINI:
-           Hanya mewarnai KOTAK INPUT (Box), bukan seluruh widget.
+           REVISI 1: MENYAMAKAN WARNA BOX NUMBER INPUT
         ---------------------------------------------------- */
         
-        /* 1. Reset background container utama widget agar transparan */
+        /* Reset background container */
         .stSelectbox, .stNumberInput, .stTextInput {
             background-color: transparent !important;
             border: none !important;
         }
 
-        /* 2. Styling untuk KOTAK Dropdown (Selectbox) */
+        /* Styling Box Dropdown (Selectbox) */
         div[data-baseweb="select"] > div {
-            background-color: #1e293b !important; /* Warna Box */
+            background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
             color: white !important;
         }
         
-        /* Fix warna teks pilihan di dalam dropdown */
-        div[data-baseweb="select"] span {
-            color: white !important;
-        }
-
-        /* 3. Styling untuk KOTAK Input Angka & Teks (NumberInput & TextInput) 
-           Target: div[data-baseweb="input"] membungkus area ketik & tombol +/- 
-        */
+        /* Styling Box Input Angka (NumberInput) - Age, BMI, Glucose */
         div[data-baseweb="input"] {
-            background-color: #1e293b !important; /* Warna Box */
+            background-color: #1e293b !important; /* Warna Box disamakan */
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
             color: white !important;
         }
 
-        /* Pastikan angka yang diketik warnanya putih */
+        /* Memastikan teks angka di dalam box berwarna putih */
         input[class] {
             color: white !important;
+            background-color: transparent !important; /* Background transparan agar warna box #1e293b terlihat */
         }
 
-        /* Styling Dropdown Popover (Pilihan yang muncul saat diklik) */
+        /* Dropdown Popover items */
         div[data-baseweb="popover"] div {
             background-color: #1e293b !important;
             color: white !important;
         }
         
+        div[data-baseweb="select"] span {
+            color: white !important;
+        }
+
         /* -- BUTTONS -- */
         .stButton>button {
             background-color: #0ea5e9; /* Sky Blue */
@@ -107,7 +107,7 @@ st.markdown("""
             font-weight: 600;
             transition: 0.3s;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 30px; /* Jarak tombol agak jauh dari input terakhir */
         }
 
         .stButton>button:hover {
@@ -148,24 +148,30 @@ def main():
     # Custom Title
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
-    # Header & Intro
-    st.markdown("### AI-Powered Stroke Risk Assessment")
+    # Sub-Title (Heading)
+    st.markdown("<h3 style='margin-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
+
+    # REVISI 4: Teks Deskripsi (Warna Abu Terang #cbd5e1 - Tidak Putih, Tidak Gelap Banget)
+    # REVISI 2: Margin bottom dikurangi agar lebih dekat dengan garis
     st.markdown(
         """
-        <p style='color: #F0F2F6; font-size: 16px; margin-bottom: 20px;'>
-        Welcome! This tool predicts the risk of stroke based on patient medical and lifestyle information.
+        <p style='color: #cbd5e1; font-size: 16px; margin-bottom: 10px; text-align: center;'>
+        Welcome! This tool predicts the risk of stroke based on patient medical and lifestyle information.<br>
         Fill out the form below to check the probability.
         </p>
         """, 
         unsafe_allow_html=True
     )
-    st.divider()
+    
+    # REVISI 2: Custom Divider (Garis) dengan jarak yang lebih rapat ke form
+    st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
     # ==========================================
     # INPUT FORM (VERTICAL LAYOUT)
     # ==========================================
     
     # ----- SECTION 1: Patient Info -----
+    # Subheader styling sudah diatur di CSS (margin-top diperbesar)
     st.subheader("Patient Info")
     
     age = st.number_input("Age", min_value=0, max_value=120, value=30)
@@ -175,6 +181,7 @@ def main():
     bmi = st.number_input("BMI", min_value=0.0, value=25.0)
 
     # ----- SECTION 2: Medical History -----
+    # REVISI 3: Jarak antar section ini sudah otomatis agak jauh karena CSS .stSubheader margin-top: 40px
     st.subheader("Medical History")
     
     hypertension = st.selectbox("Hypertension", ["Yes", "No"])
