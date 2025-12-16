@@ -57,6 +57,7 @@ st.markdown("""
             line-height: 1.6;
         }
 
+        /* Label Widget (Age, Gender, dll) - WARNA PUTIH TERANG */
         .stNumberInput label, 
         .stSelectbox label, 
         .stTextInput label,
@@ -66,19 +67,51 @@ st.markdown("""
             margin-bottom: 5px;
         }
 
+        /* ----------------------------------------------------
+           CUSTOM INPUT BOX STYLING
+        ---------------------------------------------------- */
+        
+        /* Reset background container */
         .stSelectbox, .stNumberInput, .stTextInput {
             background-color: transparent !important;
             border: none !important;
         }
 
+        /* 1. Box Dropdown & Input */
         div[data-baseweb="select"] > div, 
         div[data-baseweb="input"] {
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
+            color: white !important; /* Warna teks yang sudah diketik/dipilih */
+        }
+
+        /* 2. REVISI: Placeholder Text (e.g. 45, Select Gender) 
+           Warna Abu Terang (#94a3b8) - Terlihat jelas tapi beda dgn Label */
+        
+        /* Untuk Input Angka (NumberInput) */
+        input::placeholder {
+            color: #94a3b8 !important;
+            opacity: 1 !important; 
+        }
+        
+        /* Untuk Dropdown (Selectbox) - Placeholder text */
+        div[data-baseweb="select"] span {
+            color: #94a3b8 !important; /* Warna default (placeholder) */
+        }
+        
+        /* Memastikan nilai yang DIPILIH di dropdown berwarna PUTIH (bukan abu) */
+        div[data-baseweb="select"] div[aria-selected="true"] span {
             color: white !important;
         }
 
+        /* 3. REVISI: Warna Panah Dropdown (Arrow)
+           Disamakan dengan warna ikon +/- yaitu Putih/Terang */
+        div[data-baseweb="select"] svg {
+            fill: #e2e8f0 !important;
+        }
+
+        /* Styling internal input box */
         div[data-baseweb="input"] > div {
             background-color: transparent !important;
             color: white !important;
@@ -89,14 +122,13 @@ st.markdown("""
             background-color: transparent !important;
         }
 
+        /* Dropdown Popover (Pilihan Menu) */
         div[data-baseweb="popover"] div {
             background-color: #1e293b !important;
             color: white !important;
         }
-        div[data-baseweb="select"] span {
-            color: white !important;
-        }
-
+        
+        /* Tombol Analyze */
         .stButton>button {
             background-color: #0ea5e9;
             color: white;
