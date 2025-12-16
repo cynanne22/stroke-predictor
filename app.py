@@ -63,8 +63,8 @@ st.markdown("""
         .stTextInput label,
         div[data-testid="stWidgetLabel"] p {
             color: #f1f5f9 !important;
-            font-size: 16px !important;
-            margin-bottom: 5px;
+            font-size: 20px !important;
+            margin-bottom: 4px;
         }
 
         /* ----------------------------------------------------
