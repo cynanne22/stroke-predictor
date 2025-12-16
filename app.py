@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import time
+import plotly.graph_objects as go # PERLU: Import library untuk grafik
 
 # =======================
 # 1. Configuration & CSS (Medical Navy Theme)
@@ -55,7 +56,6 @@ st.markdown("""
             background-color: transparent !important;
         }
         
-        /* Text biasa (p) agar lebih terang */
         p {
             color: #e2e8f0;
             font-size: 16px;
@@ -154,17 +154,20 @@ MODEL_COLUMNS = [
 # 3. MAIN APP
 # =======================
 def main():
-    # Header Utama (Tetap muncul di semua tab)
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     st.markdown("<h3 style='margin-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
 
-    # Inisialisasi Session State (Untuk menyimpan hasil antar tab)
+    # Inisialisasi Session State
     if 'prediction_done' not in st.session_state:
         st.session_state['prediction_done'] = False
     if 'prediction_result' not in st.session_state:
         st.session_state['prediction_result'] = None
     if 'probability' not in st.session_state:
         st.session_state['probability'] = 0.0
+    
+    # Simpan input user juga agar bisa divisualisasikan di Tab 3
+    if 'user_input' not in st.session_state:
+        st.session_state['user_input'] = {}
 
     # ==========================
     # TABS IMPLEMENTATION
@@ -172,7 +175,7 @@ def main():
     tab1, tab2, tab3 = st.tabs(["🏠 Home Page", "🔍 Prediction", "📋 Personalized Result"])
 
     # ----------------------------------------------------
-    # TAB 1: HOME PAGE (General Info)
+    # TAB 1: HOME PAGE
     # ----------------------------------------------------
     with tab1:
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
@@ -192,7 +195,7 @@ def main():
         st.info("Navigate to the **Prediction** tab to start your assessment.")
 
     # ----------------------------------------------------
-    # TAB 2: PREDICTION (Form + Result)
+    # TAB 2: PREDICTION
     # ----------------------------------------------------
     with tab2:
         st.markdown(
@@ -225,7 +228,6 @@ def main():
             with st.spinner("Analyzing data..."):
                 time.sleep(0.5) 
                 
-                # 1. Create Input Dictionary
                 input_dict = {
                     "age": age,
                     "hypertension": 1 if hypertension == "Yes" else 0,
@@ -244,19 +246,25 @@ def main():
                     "smoking_status_smokes": 1 if smoking_status == "smokes" else 0,
                 }
 
-                # 2. Convert & Predict
                 input_df = pd.DataFrame([input_dict])
                 final_df = input_df.reindex(columns=MODEL_COLUMNS, fill_value=0)
                 
                 prediction = model.predict(final_df)[0]
                 probability = model.predict_proba(final_df)[0][1]
 
-                # 3. SAVE TO SESSION STATE (Kunci untuk membuka Tab 3)
+                # SAVE TO SESSION STATE
                 st.session_state['prediction_done'] = True
                 st.session_state['prediction_result'] = prediction
                 st.session_state['probability'] = probability
+                
+                # Simpan data mentah user utk visualisasi
+                st.session_state['user_input'] = {
+                    "Age": age,
+                    "BMI": bmi,
+                    "Glucose": avg_glucose_level
+                }
         
-        # --- DISPLAY RESULT IN TAB 2 (Immediately below button) ---
+        # --- DISPLAY RESULT ---
         if st.session_state['prediction_done']:
             st.markdown("---")
             st.subheader("Prediction Result")
@@ -265,30 +273,107 @@ def main():
             prob = st.session_state['probability']
 
             if pred == 1:
-                st.error(f"⚠ High Stroke Risk Detected\n\nProbability: {prob:.2%}")
+                st.error(f"⚠️ High Stroke Risk Detected\n\nProbability: {prob:.2%}")
                 st.write("Please consult a medical professional immediately.")
             else:
                 st.success(f"🟢 Low Stroke Risk Detected\n\nProbability: {prob:.2%}")
                 st.write("Your metrics are within a safe range. Maintain a healthy lifestyle.")
                 
-            st.info("👉 Check the **Personalized Result** tab for more details.")
+            st.info("👉 Check the **Personalized Result** tab for Visual Analytics.")
 
     # ----------------------------------------------------
-    # TAB 3: PERSONALIZED RESULT (Conditional Content)
+    # TAB 3: PERSONALIZED RESULT (WITH CHARTS)
     # ----------------------------------------------------
     with tab3:
         st.subheader("Personalized Insights")
         
-        # Cek apakah analisis sudah dilakukan?
         if st.session_state['prediction_done']:
-            # Konten Placeholder (Bisa kamu update nanti)
-            st.write("Analysis complete. Loading personalized recommendations...")
             
-            # Contoh menampilkan data simpel dari hasil prediksi
-            risk_label = "High Risk" if st.session_state['prediction_result'] == 1 else "Low Risk"
-            st.markdown(f"**Patient Risk Profile:** {risk_label}")
+            # 1. Ambil Data
+            prob = st.session_state['probability']
+            user_data = st.session_state['user_input']
             
-            st.warning("🚧 Content for Personalized Result will be updated soon.")
+            # -----------------------------------------
+            # GRAFIK 1: GAUGE CHART (SPIDOMETER RISIKO)
+            # -----------------------------------------
+            col_graph1, col_graph2 = st.columns([1, 1])
+            
+            with col_graph1:
+                st.markdown("**Risk Probability Gauge**")
+                
+                fig_gauge = go.Figure(go.Indicator(
+                    mode = "gauge+number",
+                    value = prob * 100, # Convert to percentage
+                    title = {'text': "Stroke Probability (%)", 'font': {'color': 'white'}},
+                    number = {'font': {'color': 'white'}},
+                    gauge = {
+                        'axis': {'range': [None, 100], 'tickwidth': 1, 'tickcolor': "white"},
+                        'bar': {'color': "#0ea5e9"}, # Warna Jarum/Bar (Biru Langit)
+                        'bgcolor': "white",
+                        'borderwidth': 2,
+                        'bordercolor': "gray",
+                        'steps': [
+                            {'range': [0, 40], 'color': "#10b981"},  # Green (Safe)
+                            {'range': [40, 70], 'color': "#f59e0b"}, # Yellow (Warning)
+                            {'range': [70, 100], 'color': "#ef4444"} # Red (Danger)
+                        ],
+                    }
+                ))
+                
+                # Update layout agar transparan menyatu dengan background
+                fig_gauge.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font={'color': "white"},
+                    height=300,
+                    margin=dict(l=30, r=30, t=50, b=30)
+                )
+                st.plotly_chart(fig_gauge, use_container_width=True)
+
+            # -----------------------------------------
+            # GRAFIK 2: COMPARISON CHART (USER VS HEALTHY)
+            # -----------------------------------------
+            with col_graph2:
+                st.markdown("**Your Metrics vs Healthy Average**")
+                
+                # Standar kesehatan kasar untuk perbandingan
+                categories = ['BMI', 'Glucose', 'Age']
+                user_values = [user_data['BMI'], user_data['Glucose'], user_data['Age']]
+                healthy_values = [22.0, 90.0, 40.0] # Contoh nilai rata-rata sehat
+                
+                fig_bar = go.Figure(data=[
+                    go.Bar(name='Your Data', x=categories, y=user_values, marker_color='#38bdf8'),
+                    go.Bar(name='Healthy Avg', x=categories, y=healthy_values, marker_color='#94a3b8')
+                ])
+                
+                fig_bar.update_layout(
+                    barmode='group',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font={'color': "white"},
+                    height=300,
+                    margin=dict(l=20, r=20, t=50, b=20),
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                st.plotly_chart(fig_bar, use_container_width=True)
+
+            # --- Text Advice ---
+            st.markdown("---")
+            st.write("### AI-Generated Recommendations")
+            
+            if prob > 0.5:
+                st.warning("Based on the analysis, your risk profile is elevated.")
+                st.markdown("""
+                - **Primary Concern:** Your calculated probability is in the higher range.
+                - **Comparison:** Check the bar chart. If your Glucose or BMI is significantly higher than the 'Healthy Avg' (Grey bar), focus on lowering that metric.
+                - **Action:** Consult a specialist immediately.
+                """)
+            else:
+                st.success("Your risk profile is currently stable.")
+                st.markdown("""
+                - **Comparison:** Your metrics align well with healthy averages.
+                - **Maintenance:** Continue your current diet and exercise routine.
+                """)
             
         else:
             # Tampilan jika belum melakukan analisis
