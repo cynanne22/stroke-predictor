@@ -126,9 +126,9 @@ def main():
     
     # Text intro dengan warna lebih terang agar mudah dibaca
     st.markdown(
+        ### AI-Powered Stroke Risk Assessment<br>
         """
         <p style='color: #F0F2F6; font-size: 16px; margin-bottom: 20px;'>
-        ### AI-Powered Stroke Risk Assessment<br>
         Welcome! This tool predicts the risk of stroke based on patient medical and lifestyle information.
         Fill out the form below to check the probability.
         </p>
