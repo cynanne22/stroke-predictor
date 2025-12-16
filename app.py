@@ -30,16 +30,16 @@ st.markdown("""
             font-weight: 700;
             color: #38bdf8; /* Cyan/Light Blue */
             text-align: center;
-            margin-bottom: 5px; /* Jarak judul utama ke bawah dikurangi */
+            margin-bottom: 5px;
             font-family: 'Roboto', sans-serif;
         }
         
-        /* -- SUBHEADERS (Patient Info, Medical History) -- */
+        /* -- SUBHEADERS -- */
         h3, .stHeader, .stSubheader {
             color: #f1f5f9 !important; /* White-ish color */
             font-size: 1.5rem !important;
             font-weight: 600 !important;
-            margin-top: 40px !important; /* REVISI 3: Memberi jarak lebih antar section */
+            margin-top: 40px !important; /* Jarak antar section lebih lega */
             margin-bottom: 10px !important;
             background-color: transparent !important;
         }
@@ -55,43 +55,48 @@ st.markdown("""
         }
 
         /* ----------------------------------------------------
-           REVISI 1: MENYAMAKAN WARNA BOX NUMBER INPUT
+           CUSTOM INPUT BOX STYLING (Age, BMI, Glucose, dll)
         ---------------------------------------------------- */
         
-        /* Reset background container */
+        /* 1. Reset background container bawaan */
         .stSelectbox, .stNumberInput, .stTextInput {
             background-color: transparent !important;
             border: none !important;
         }
 
-        /* Styling Box Dropdown (Selectbox) */
+        /* 2. Styling Box Dropdown (Selectbox) */
         div[data-baseweb="select"] > div {
-            background-color: #1e293b !important;
+            background-color: #1e293b !important; /* Warna Box Biru Gelap */
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
             color: white !important;
         }
         
-        /* Styling Box Input Angka (NumberInput) - Age, BMI, Glucose */
+        /* 3. Styling Box Input Angka (NumberInput) - Age, BMI, Glucose 
+           Target container utamanya agar background berubah */
         div[data-baseweb="input"] {
-            background-color: #1e293b !important; /* Warna Box disamakan */
-            border: 1px solid #334155 !important;
+            background-color: #1e293b !important; /* Warna Box Biru Gelap (SAMA) */
+            border: 1px solid #334155 !important; /* Border Abu (SAMA) */
             border-radius: 8px !important;
             color: white !important;
         }
 
-        /* Memastikan teks angka di dalam box berwarna putih */
-        input[class] {
+        /* Pastikan area ketik angka background-nya transparan agar warna container terlihat */
+        div[data-baseweb="input"] > div {
+            background-color: transparent !important;
             color: white !important;
-            background-color: transparent !important; /* Background transparan agar warna box #1e293b terlihat */
+        }
+        
+        input[class] {
+            color: white !important; /* Angka warna putih */
+            background-color: transparent !important;
         }
 
-        /* Dropdown Popover items */
+        /* Dropdown Popover & Text Fixes */
         div[data-baseweb="popover"] div {
             background-color: #1e293b !important;
             color: white !important;
         }
-        
         div[data-baseweb="select"] span {
             color: white !important;
         }
@@ -107,7 +112,7 @@ st.markdown("""
             font-weight: 600;
             transition: 0.3s;
             width: 100%;
-            margin-top: 30px; /* Jarak tombol agak jauh dari input terakhir */
+            margin-top: 30px;
         }
 
         .stButton>button:hover {
@@ -148,11 +153,9 @@ def main():
     # Custom Title
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
-    # Sub-Title (Heading)
+    # Subheader & Intro Text
     st.markdown("<h3 style='margin-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
 
-    # REVISI 4: Teks Deskripsi (Warna Abu Terang #cbd5e1 - Tidak Putih, Tidak Gelap Banget)
-    # REVISI 2: Margin bottom dikurangi agar lebih dekat dengan garis
     st.markdown(
         """
         <p style='color: #cbd5e1; font-size: 16px; margin-bottom: 10px; text-align: center;'>
@@ -163,7 +166,7 @@ def main():
         unsafe_allow_html=True
     )
     
-    # REVISI 2: Custom Divider (Garis) dengan jarak yang lebih rapat ke form
+    # Custom Divider
     st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
 
     # ==========================================
@@ -171,7 +174,6 @@ def main():
     # ==========================================
     
     # ----- SECTION 1: Patient Info -----
-    # Subheader styling sudah diatur di CSS (margin-top diperbesar)
     st.subheader("Patient Info")
     
     age = st.number_input("Age", min_value=0, max_value=120, value=30)
@@ -181,7 +183,6 @@ def main():
     bmi = st.number_input("BMI", min_value=0.0, value=25.0)
 
     # ----- SECTION 2: Medical History -----
-    # REVISI 3: Jarak antar section ini sudah otomatis agak jauh karena CSS .stSubheader margin-top: 40px
     st.subheader("Medical History")
     
     hypertension = st.selectbox("Hypertension", ["Yes", "No"])
@@ -198,9 +199,9 @@ def main():
     if st.button("Analyze Stroke Risk"):
         
         with st.spinner("Analyzing data..."):
-            time.sleep(0.5) # Aesthetic loading delay
+            time.sleep(0.5) 
             
-            # 1. Create Input Dictionary
+            # 1. Input Dictionary
             input_dict = {
                 "age": age,
                 "hypertension": 1 if hypertension == "Yes" else 0,
@@ -219,7 +220,7 @@ def main():
                 "smoking_status_smokes": 1 if smoking_status == "smokes" else 0,
             }
 
-            # 2. Convert to DataFrame & Reindex (Safety Step)
+            # 2. DataFrame Creation
             input_df = pd.DataFrame([input_dict])
             final_df = input_df.reindex(columns=MODEL_COLUMNS, fill_value=0)
 
