@@ -160,7 +160,7 @@ SMOKING_MAP = {
 # =======================
 def main():
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top: 10px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
 
     if 'prediction_done' not in st.session_state:
         st.session_state['prediction_done'] = False
@@ -198,14 +198,6 @@ def main():
     # ----------------------------------------------------
     with tab2:
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
-        st.markdown(
-            """
-            <p style='color: #cbd5e1; font-size: 16px; margin-top: 10px; margin-bottom: 10px; text-align: center;'>
-            Fill out the patient details below to analyze the risk profile.
-            </p>
-            """, 
-            unsafe_allow_html=True
-        )
         
         # --- INPUT FORM (DEFAULT EMPTY) ---
         st.subheader("Patient Info")
