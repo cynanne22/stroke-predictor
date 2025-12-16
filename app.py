@@ -207,72 +207,82 @@ def main():
         )
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
-        # --- INPUT FORM (Dengan Label Rapi) ---
+        # --- INPUT FORM (DEFAULT EMPTY) ---
         st.subheader("Patient Info")
-        age = st.number_input("Age", min_value=0, max_value=120, value=30)
-        gender = st.selectbox("Gender", ["Male", "Female"])
-        ever_married = st.selectbox("Ever Married?", ["Yes", "No"])
-        residence = st.selectbox("Residence Type", ["Urban", "Rural"])
-        bmi = st.number_input("BMI", min_value=0.0, value=25.0)
+        
+        # NOTE: value=None makes it empty, placeholder shows text hint
+        age = st.number_input("Age", min_value=0, max_value=120, value=None, placeholder="e.g. 45")
+        
+        # NOTE: index=None makes dropdown empty/unselected
+        gender = st.selectbox("Gender", ["Male", "Female"], index=None, placeholder="Select Gender")
+        ever_married = st.selectbox("Ever Married?", ["Yes", "No"], index=None, placeholder="Select Status")
+        residence = st.selectbox("Residence Type", ["Urban", "Rural"], index=None, placeholder="Select Residence Type")
+        bmi = st.number_input("BMI", min_value=0.0, value=None, placeholder="e.g. 24.5")
 
         st.subheader("Medical History")
-        hypertension = st.selectbox("Hypertension", ["Yes", "No"])
-        heart_disease = st.selectbox("Heart Disease", ["Yes", "No"])
+        hypertension = st.selectbox("Hypertension", ["Yes", "No"], index=None, placeholder="Select History")
+        heart_disease = st.selectbox("Heart Disease", ["Yes", "No"], index=None, placeholder="Select History")
         
-        # Gunakan Keys dari Dictionary untuk tampilan Dropdown
-        smoking_display = st.selectbox("Smoking Status", list(SMOKING_MAP.keys()))
-        work_display = st.selectbox("Work Type", list(WORK_TYPE_MAP.keys()))
+        smoking_display = st.selectbox("Smoking Status", list(SMOKING_MAP.keys()), index=None, placeholder="Select Smoking Status")
+        work_display = st.selectbox("Work Type", list(WORK_TYPE_MAP.keys()), index=None, placeholder="Select Work Type")
         
-        avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=90.0)
+        avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=None, placeholder="e.g. 95.0")
 
         # --- PREDICT BUTTON ---
         if st.button("Analyze Stroke Risk"):
-            with st.spinner("Analyzing data..."):
-                time.sleep(0.5) 
-                
-                # Konversi Pilihan Tampilan -> Nilai Asli Dataset
-                # Mengambil value dari dictionary berdasarkan key yang dipilih user
-                raw_work_type = WORK_TYPE_MAP[work_display]
-                raw_smoking_status = SMOKING_MAP[smoking_display]
-
-                # Create Input Dictionary
-                input_dict = {
-                    "age": age,
-                    "hypertension": 1 if hypertension == "Yes" else 0,
-                    "heart_disease": 1 if heart_disease == "Yes" else 0,
-                    "ever_married": 1 if ever_married == "Yes" else 0,
-                    "avg_glucose_level": avg_glucose_level,
-                    "bmi": bmi,
-                    "gender_Male": 1 if gender == "Male" else 0,
+            
+            # 1. VALIDATION CHECK (PENTING!)
+            # Cek apakah ada input yang masih kosong (None)
+            required_fields = [age, gender, ever_married, residence, bmi, hypertension, heart_disease, smoking_display, work_display, avg_glucose_level]
+            
+            if None in required_fields:
+                st.error("⚠ Please fill out all fields before analyzing.")
+            else:
+                # Jika semua terisi, baru jalankan proses prediksi
+                with st.spinner("Analyzing data..."):
+                    time.sleep(0.5) 
                     
-                    # Logika Model menggunakan RAW values yang sudah di-mapping
-                    "work_type_Never_worked": 1 if raw_work_type == "Never_worked" else 0,
-                    "work_type_Private": 1 if raw_work_type == "Private" else 0,
-                    "work_type_Self-employed": 1 if raw_work_type == "Self-employed" else 0,
-                    "work_type_children": 1 if raw_work_type == "children" else 0,
-                    
-                    "Residence_type_Urban": 1 if residence == "Urban" else 0,
-                    
-                    "smoking_status_formerly smoked": 1 if raw_smoking_status == "formerly smoked" else 0,
-                    "smoking_status_never smoked": 1 if raw_smoking_status == "never smoked" else 0,
-                    "smoking_status_smokes": 1 if raw_smoking_status == "smokes" else 0,
-                }
+                    # Konversi Pilihan Tampilan -> Nilai Asli Dataset
+                    raw_work_type = WORK_TYPE_MAP[work_display]
+                    raw_smoking_status = SMOKING_MAP[smoking_display]
 
-                input_df = pd.DataFrame([input_dict])
-                final_df = input_df.reindex(columns=MODEL_COLUMNS, fill_value=0)
-                
-                prediction = model.predict(final_df)[0]
-                probability = model.predict_proba(final_df)[0][1]
+                    # Create Input Dictionary
+                    input_dict = {
+                        "age": age,
+                        "hypertension": 1 if hypertension == "Yes" else 0,
+                        "heart_disease": 1 if heart_disease == "Yes" else 0,
+                        "ever_married": 1 if ever_married == "Yes" else 0,
+                        "avg_glucose_level": avg_glucose_level,
+                        "bmi": bmi,
+                        "gender_Male": 1 if gender == "Male" else 0,
+                        
+                        "work_type_Never_worked": 1 if raw_work_type == "Never_worked" else 0,
+                        "work_type_Private": 1 if raw_work_type == "Private" else 0,
+                        "work_type_Self-employed": 1 if raw_work_type == "Self-employed" else 0,
+                        "work_type_children": 1 if raw_work_type == "children" else 0,
+                        
+                        "Residence_type_Urban": 1 if residence == "Urban" else 0,
+                        
+                        "smoking_status_formerly smoked": 1 if raw_smoking_status == "formerly smoked" else 0,
+                        "smoking_status_never smoked": 1 if raw_smoking_status == "never smoked" else 0,
+                        "smoking_status_smokes": 1 if raw_smoking_status == "smokes" else 0,
+                    }
 
-                st.session_state['prediction_done'] = True
-                st.session_state['prediction_result'] = prediction
-                st.session_state['probability'] = probability
-                
-                st.session_state['user_input'] = {
-                    "Age": age,
-                    "BMI": bmi,
-                    "Glucose": avg_glucose_level
-                }
+                    input_df = pd.DataFrame([input_dict])
+                    final_df = input_df.reindex(columns=MODEL_COLUMNS, fill_value=0)
+                    
+                    prediction = model.predict(final_df)[0]
+                    probability = model.predict_proba(final_df)[0][1]
+
+                    st.session_state['prediction_done'] = True
+                    st.session_state['prediction_result'] = prediction
+                    st.session_state['probability'] = probability
+                    
+                    st.session_state['user_input'] = {
+                        "Age": age,
+                        "BMI": bmi,
+                        "Glucose": avg_glucose_level
+                    }
         
         # --- DISPLAY RESULT ---
         if st.session_state['prediction_done']:
