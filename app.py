@@ -6,6 +6,29 @@ import time
 # =======================
 # 1. Configuration & CSS (CerebroCare Theme)
 # =======================
+st.markdown("""
+<style>
+/* Mengatur tampilan tombol (Button) */
+div.stButton > button {
+    width: 100%;              /* Membuat tombol selebar kolom (full width) */
+    margin-top: 20px;         /* Memberi jarak 20px di atas tombol supaya tidak mepet */
+    padding-top: 10px;        /* Memberi ruang di dalam tombol (atas) */
+    padding-bottom: 10px;     /* Memberi ruang di dalam tombol (bawah) */
+    font-weight: bold;        /* Menebalkan teks tombol */
+    background-color: #FF4B4B;/* Opsional: Mengubah warna tombol (contoh merah Streamlit) */
+    color: white;             /* Warna teks tombol */
+    border-radius: 10px;      /* Membuat sudut tombol agak membulat */
+    border: none;             /* Menghilangkan garis pinggir default */
+}
+
+/* Efek saat mouse diarahkan ke tombol (Hover) */
+div.stButton > button:hover {
+    background-color: #FF2B2B; /* Warna saat hover sedikit lebih gelap */
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.set_page_config(page_title="CerebroCare", layout="centered")
 
 st.markdown("""
@@ -126,10 +149,14 @@ def main():
 
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
-    st.write("""
-        ### AI-Powered Stroke Risk Assessment
+    st.markdown(
+        """
+        <p style='color: #F0F2F6; font-size: 16px; margin-bottom: 20px;'>
         Please fill out the patient details below to analyze the risk profile.
-    """)
+        </p>
+        """, 
+        unsafe_allow_html=True
+    )
     st.divider()
 
     # ==========================================
