@@ -124,9 +124,9 @@ def main():
     # Custom Title
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
-    # Text intro dengan warna lebih terang agar mudah dibaca
+    st.markdown("### AI-Powered Stroke Risk Assessment")
+    
     st.markdown(
-        ### AI-Powered Stroke Risk Assessment<br>
         """
         <p style='color: #F0F2F6; font-size: 16px; margin-bottom: 20px;'>
         Welcome! This tool predicts the risk of stroke based on patient medical and lifestyle information.
