@@ -34,39 +34,63 @@ st.markdown("""
             font-family: 'Roboto', sans-serif;
         }
         
-        /* -- SUBTITLES (Patient Info, Medical History) -- */
+        /* -- SUBHEADERS -- */
         h3, .stHeader, .stSubheader {
             color: #f1f5f9 !important; /* White-ish color */
             margin-top: 20px;
+            background-color: transparent !important; /* Pastikan tidak ada box background */
         }
 
-        /* -- WIDGET LABELS (Age, Gender, Hypertension, etc.) -- */
-        /* Forces these labels to match the subtitle color exactly (#f1f5f9) */
+        /* -- WIDGET LABELS -- */
         .stNumberInput label, 
         .stSelectbox label, 
         .stTextInput label,
         div[data-testid="stWidgetLabel"] p {
-            color: #f1f5f9 !important; /* MATCHING SUBTITLES */
+            color: #f1f5f9 !important;
             font-size: 16px !important;
+            margin-bottom: 5px; /* Jarak antara label dan kotak input */
         }
 
-        /* -- INPUT FIELDS -- */
-        .stSelectbox, .stNumberInput, .stTextInput>div>input {
-            background-color: #1e293b; /* Slate Blue */
-            color: white;
-            border-radius: 8px;
-            border: 1px solid #334155;
+        /* ----------------------------------------------------
+           PERBAIKAN CSS DI SINI:
+           Hanya mewarnai KOTAK INPUT (Box), bukan seluruh widget.
+        ---------------------------------------------------- */
+        
+        /* 1. Reset background container utama widget agar transparan */
+        .stSelectbox, .stNumberInput, .stTextInput {
+            background-color: transparent !important;
+            border: none !important;
+        }
+
+        /* 2. Styling untuk KOTAK Dropdown (Selectbox) */
+        div[data-baseweb="select"] > div {
+            background-color: #1e293b !important; /* Warna Box */
+            border: 1px solid #334155 !important;
+            border-radius: 8px !important;
+            color: white !important;
         }
         
-        /* Dropdown text fix */
-        div[data-baseweb="select"] > div {
-            background-color: #1e293b !important;
-            color: white !important;
-            border-color: #334155 !important;
-        }
+        /* Fix warna teks pilihan di dalam dropdown */
         div[data-baseweb="select"] span {
             color: white !important;
         }
+
+        /* 3. Styling untuk KOTAK Input Angka & Teks (NumberInput & TextInput) 
+           Target: div[data-baseweb="input"] membungkus area ketik & tombol +/- 
+        */
+        div[data-baseweb="input"] {
+            background-color: #1e293b !important; /* Warna Box */
+            border: 1px solid #334155 !important;
+            border-radius: 8px !important;
+            color: white !important;
+        }
+
+        /* Pastikan angka yang diketik warnanya putih */
+        input[class] {
+            color: white !important;
+        }
+
+        /* Styling Dropdown Popover (Pilihan yang muncul saat diklik) */
         div[data-baseweb="popover"] div {
             background-color: #1e293b !important;
             color: white !important;
@@ -83,7 +107,7 @@ st.markdown("""
             font-weight: 600;
             transition: 0.3s;
             width: 100%;
-            margin-top: 20px; /* Tambahan jarak di atas tombol */
+            margin-top: 20px;
         }
 
         .stButton>button:hover {
@@ -124,8 +148,8 @@ def main():
     # Custom Title
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
+    # Header & Intro
     st.markdown("### AI-Powered Stroke Risk Assessment")
-    
     st.markdown(
         """
         <p style='color: #F0F2F6; font-size: 16px; margin-bottom: 20px;'>
@@ -138,7 +162,7 @@ def main():
     st.divider()
 
     # ==========================================
-    # INPUT FORM (VERTICAL LAYOUT / KE BAWAH)
+    # INPUT FORM (VERTICAL LAYOUT)
     # ==========================================
     
     # ----- SECTION 1: Patient Info -----
