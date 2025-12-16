@@ -197,7 +197,7 @@ def main():
     # TAB 2: PREDICTION
     # ----------------------------------------------------
     with tab2:
-        st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='border: 1px solid #334155; margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         st.markdown(
             """
             <p style='color: #cbd5e1; font-size: 16px; margin-top: 10px; margin-bottom: 10px; text-align: center;'>
@@ -304,7 +304,7 @@ def main():
     # TAB 3: PERSONALIZED RESULT
     # ----------------------------------------------------
     with tab3:
-        st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='border: 1px solid #334155; margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         st.subheader("Personalized Insights")
         
         if st.session_state['prediction_done']:
