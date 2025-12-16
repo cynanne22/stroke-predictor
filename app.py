@@ -63,8 +63,8 @@ st.markdown("""
         .stTextInput label,
         div[data-testid="stWidgetLabel"] p {
             color: #f1f5f9 !important;
-            font-size: 20px !important;
-            margin-bottom: 4px;
+            font-size: 16px !important;
+            margin-bottom: 5px;
         }
 
         /* ----------------------------------------------------
@@ -192,7 +192,7 @@ SMOKING_MAP = {
 # =======================
 def main():
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin-top: -20px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
 
     if 'prediction_done' not in st.session_state:
         st.session_state['prediction_done'] = False
