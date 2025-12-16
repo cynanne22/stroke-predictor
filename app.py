@@ -160,7 +160,7 @@ SMOKING_MAP = {
 # =======================
 def main():
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin-top: 10px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top: -20px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
 
     if 'prediction_done' not in st.session_state:
         st.session_state['prediction_done'] = False
