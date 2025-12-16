@@ -37,6 +37,7 @@ st.markdown("""
         /* -- SUBTITLES (Patient Info, Medical History) -- */
         h3, .stHeader, .stSubheader {
             color: #f1f5f9 !important; /* White-ish color */
+            margin-top: 20px;
         }
 
         /* -- WIDGET LABELS (Age, Gender, Hypertension, etc.) -- */
@@ -82,6 +83,7 @@ st.markdown("""
             font-weight: 600;
             transition: 0.3s;
             width: 100%;
+            margin-top: 20px; /* Tambahan jarak di atas tombol */
         }
 
         .stButton>button:hover {
@@ -122,32 +124,40 @@ def main():
     # Custom Title
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
-    st.write("""
-        ### AI-Powered Stroke Risk Assessment
+    # Text intro dengan warna lebih terang agar mudah dibaca
+    st.markdown(
+        """
+        <p style='color: #F0F2F6; font-size: 16px; margin-bottom: 20px;'>
+        ### AI-Powered Stroke Risk Assessment<br>
         Welcome! This tool predicts the risk of stroke based on patient medical and lifestyle information.
         Fill out the form below to check the probability.
-    """)
+        </p>
+        """, 
+        unsafe_allow_html=True
+    )
     st.divider()
 
-    col1, col2 = st.columns(2)
+    # ==========================================
+    # INPUT FORM (VERTICAL LAYOUT / KE BAWAH)
+    # ==========================================
+    
+    # ----- SECTION 1: Patient Info -----
+    st.subheader("Patient Info")
+    
+    age = st.number_input("Age", min_value=0, max_value=120, value=30)
+    gender = st.selectbox("Gender", ["Male", "Female"])
+    ever_married = st.selectbox("Ever Married?", ["Yes", "No"])
+    residence = st.selectbox("Residence Type", ["Urban", "Rural"])
+    bmi = st.number_input("BMI", min_value=0.0, value=25.0)
 
-    # ===== Left column =====
-    with col1:
-        st.subheader("Patient Info")
-        age = st.number_input("Age", min_value=0, max_value=120, value=30)
-        gender = st.selectbox("Gender", ["Male", "Female"])
-        ever_married = st.selectbox("Ever Married?", ["Yes", "No"])
-        residence = st.selectbox("Residence Type", ["Urban", "Rural"])
-        bmi = st.number_input("BMI", min_value=0.0, value=25.0)
-
-    # ===== Right column =====
-    with col2:
-        st.subheader("Medical History")
-        hypertension = st.selectbox("Hypertension", ["Yes", "No"])
-        heart_disease = st.selectbox("Heart Disease", ["Yes", "No"])
-        smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
-        work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Never_worked", "children", "Govt_job"])
-        avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=90.0)
+    # ----- SECTION 2: Medical History -----
+    st.subheader("Medical History")
+    
+    hypertension = st.selectbox("Hypertension", ["Yes", "No"])
+    heart_disease = st.selectbox("Heart Disease", ["Yes", "No"])
+    smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
+    work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Never_worked", "children", "Govt_job"])
+    avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=90.0)
 
     st.markdown("---")
 
