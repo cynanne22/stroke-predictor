@@ -14,6 +14,7 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+        /* -- MAIN BODY -- */
         body {
             background-color: #0f172a;
             color: #e2e8f0;
@@ -24,6 +25,28 @@ st.markdown("""
             background-color: #0f172a;
         }
 
+        /* -- SIDEBAR STYLING (REVISI) -- */
+        /* Mengubah warna sidebar agar GELAP (sama dengan main body) */
+        section[data-testid="stSidebar"] {
+            background-color: #0f172a !important; 
+            border-right: 1px solid #1e293b; /* Sedikit border pemisah halus */
+        }
+        
+        /* Memastikan teks di sidebar tetap terang */
+        section[data-testid="stSidebar"] p, 
+        section[data-testid="stSidebar"] span,
+        section[data-testid="stSidebar"] div {
+            color: #cbd5e1 !important;
+        }
+
+        /* LOGO STYLING (NATURAL) */
+        /* Menghapus border/lingkaran paksa. Logo PNG akan tampil natural */
+        section[data-testid="stSidebar"] img {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* -- MAIN TITLES -- */
         .main-title {
             font-size: 3.5rem;
             font-weight: 700;
@@ -34,6 +57,7 @@ st.markdown("""
             font-family: 'Roboto', sans-serif;
         }
         
+        /* -- TABS -- */
         button[data-baseweb="tab"] {
             color: #cbd5e1; 
             font-size: 20px !important;
@@ -44,6 +68,7 @@ st.markdown("""
             border-bottom-color: #38bdf8;
         }
         
+        /* -- HEADERS -- */
         h3, .stHeader, .stSubheader {
             color: #f1f5f9 !important;
             font-size: 1.5rem !important;
@@ -53,12 +78,14 @@ st.markdown("""
             background-color: transparent !important;
         }
         
+        /* -- TEXT -- */
         p, li {
             color: #e2e8f0 !important;
             font-size: 16px;
             line-height: 1.6;
         }
 
+        /* -- WIDGET LABELS -- */
         .stNumberInput label, 
         .stSelectbox label, 
         .stTextInput label,
@@ -84,6 +111,7 @@ st.markdown("""
             color: #94a3b8 !important;
         }
 
+        /* Placeholder & Text Colors */
         input::placeholder {
             color: #94a3b8 !important;
             opacity: 1 !important; 
@@ -113,6 +141,7 @@ st.markdown("""
             color: white !important;
         }
         
+        /* -- BUTTONS -- */
         .stButton>button {
             background-color: #0ea5e9;
             color: white;
@@ -133,18 +162,6 @@ st.markdown("""
             background-color: #1e293b;
             color: white;
             border: 1px solid #334155;
-        }
-
-        /* --- LOGO STYLING (BARU) --- */
-        /* Membuat gambar di sidebar jadi bulat & ada border */
-        section[data-testid="stSidebar"] img {
-            border-radius: 50%;         /* Membuat bulat */
-            border: 3px solid #38bdf8;  /* Border warna Cyan */
-            padding: 2px;               /* Jarak antara gambar & border */
-            background-color: white;    /* Pastikan background putih bersih */
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -190,12 +207,11 @@ def main():
     # --- SIDEBAR: LOGO & ABOUT ---
     with st.sidebar:
         try:
-            # Gunakan kolom untuk memusatkan logo di sidebar
-            # dan membuatnya tidak terlalu besar (menggunakan width)
-            col1, col2, col3 = st.columns([0.2, 0.6, 0.2])
-            with col2:
-                # Pastikan nama file benar (Case Sensitive!)
-                st.image("CerebroCareLogo.jpg", use_container_width=True)
+            # Gunakan kolom agar logo bisa diatur ukurannya dengan 'width' atau proporsi kolom
+            col_l, col_center, col_r = st.columns([0.1, 0.8, 0.1])
+            with col_center:
+                # Update Nama File Logo di sini
+                st.image("logoCerebro.png", use_container_width=True)
             
             st.markdown("<div style='text-align: center; color: #94a3b8; font-size: 14px; margin-top: 10px;'>v1.0.0 - AI Healthcare System</div>", unsafe_allow_html=True)
         except:
