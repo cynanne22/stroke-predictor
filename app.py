@@ -28,13 +28,17 @@ st.markdown("""
             font-weight: 700;
             color: #38bdf8;
             text-align: center;
-            margin-bottom: 5px;
+            /* REVISI 1: Mengurangi jarak ke bawah secara ekstrem dengan nilai negatif 
+               agar menempel dengan sub-judul */
+            margin-bottom: -20px !important; 
+            padding-bottom: 0px !important;
             font-family: 'Roboto', sans-serif;
         }
         
+        /* REVISI 2: Memperbesar Font Navigation Bar (Tabs) */
         button[data-baseweb="tab"] {
             color: #cbd5e1; 
-            font-size: 16px;
+            font-size: 20px !important; /* Diperbesar dari 16px ke 20px */
             font-weight: 600;
         }
         button[data-baseweb="tab"][aria-selected="true"] {
@@ -42,6 +46,7 @@ st.markdown("""
             border-bottom-color: #38bdf8;
         }
         
+        /* Subheaders styling */
         h3, .stHeader, .stSubheader {
             color: #f1f5f9 !important;
             font-size: 1.5rem !important;
@@ -51,14 +56,14 @@ st.markdown("""
             background-color: transparent !important;
         }
         
-        /* Teks paragraf (p) dan bullet points (li) berwarna TERANG */
+        /* Teks paragraf & list items */
         p, li {
             color: #e2e8f0 !important;
             font-size: 16px;
             line-height: 1.6;
         }
 
-        /* Label Widget (Age, Gender, dll) - WARNA PUTIH TERANG */
+        /* Label Widget */
         .stNumberInput label, 
         .stSelectbox label, 
         .stTextInput label,
@@ -71,7 +76,6 @@ st.markdown("""
         /* ----------------------------------------------------
            CUSTOM INPUT BOX STYLING
         ---------------------------------------------------- */
-        
         .stSelectbox, .stNumberInput, .stTextInput {
             background-color: transparent !important;
             border: none !important;
@@ -82,22 +86,20 @@ st.markdown("""
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
-            color: white !important; /* Warna teks yang sudah diketik */
+            color: white !important;
         }
 
-        /* Placeholder Text */
+        /* Placeholder & Text Colors */
         input::placeholder {
             color: #94a3b8 !important;
             opacity: 1 !important; 
         }
         div[data-baseweb="select"] span {
-            color: #94a3b8 !important; /* Placeholder dropdown */
+            color: #94a3b8 !important;
         }
         div[data-baseweb="select"] div[aria-selected="true"] span {
-            color: white !important; /* Pilihan terpilih putih */
+            color: white !important;
         }
-
-        /* Warna Panah Dropdown - PUTIH */
         div[data-baseweb="select"] svg {
             fill: #e2e8f0 !important;
         }
@@ -117,6 +119,7 @@ st.markdown("""
             color: white !important;
         }
         
+        /* Button Styling */
         .stButton>button {
             background-color: #0ea5e9;
             color: white;
@@ -178,9 +181,13 @@ SMOKING_MAP = {
 # 3. MAIN APP
 # =======================
 def main():
+    # 1. Judul Utama
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
+    
+    # 2. Sub-Judul (REVISI 1: margin-top dibuat 0px atau sedikit negatif agar nempel ke atas)
+    st.markdown("<h3 style='margin-top: 0px !important; padding-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
 
+    # Init Session State
     if 'prediction_done' not in st.session_state:
         st.session_state['prediction_done'] = False
     if 'prediction_result' not in st.session_state:
@@ -190,16 +197,16 @@ def main():
     if 'user_input' not in st.session_state:
         st.session_state['user_input'] = {}
 
+    # Tabs
     tab1, tab2, tab3 = st.tabs(["🏠 Home Page", "🔍 Prediction", "📋 Personalized Result"])
 
     # ====================================================
-    # TAB 1: HOME PAGE (DASHBOARD CONTENT)
+    # TAB 1: HOME PAGE
     # ====================================================
     with tab1:
-        # Garis pembatas custom dengan margin rapat (jarak atas/bawah kecil)
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
-        # 1. Hero Section: The Definition
+        # Hero Section
         st.subheader("What is a Stroke?")
         st.write("""
         A stroke occurs when the blood supply to part of your brain is interrupted or reduced, 
@@ -207,14 +214,11 @@ def main():
         **It is a medical emergency where immediate treatment is crucial.**
         """)
         
-        # Mengganti '---' default dengan custom HR yang margin-nya lebih kecil (15px)
         st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
-        # 2. The Golden Rule: F.A.S.T.
+        # F.A.S.T.
         st.subheader("Know the Warning Signs (:red[F.A.S.T.])")
-        
         col1, col2, col3, col4 = st.columns(4)
-        
         with col1:
             st.markdown("### 😐 :red[F]ace")
             st.caption("Does one side of the face droop or is it numb? Ask the person to smile.")
@@ -230,12 +234,9 @@ def main():
 
         st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
-        # 3. Risk Factors (Medical vs Lifestyle)
+        # Risk Factors
         st.subheader("Risk Factors")
-        
         risk_c1, risk_c2 = st.columns(2)
-        
-        # REVISI: Menggunakan <h4> dengan warna #cbd5e1 agar lebih terang dan jelas
         with risk_c1:
             st.markdown("<h4 style='color: #cbd5e1; margin-bottom: 10px;'>🏥 Medical Risk Factors</h4>", unsafe_allow_html=True)
             st.markdown("""
@@ -245,7 +246,6 @@ def main():
             - Obesity
             - Family history of stroke
             """)
-        
         with risk_c2:
             st.markdown("<h4 style='color: #cbd5e1; margin-bottom: 10px;'>🚬 Lifestyle Risk Factors</h4>", unsafe_allow_html=True)
             st.markdown("""
@@ -257,7 +257,7 @@ def main():
 
         st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
-        # 4. Why Early Detection Matters?
+        # Why Early Detection & Prevention
         st.subheader("Time is Brain 🧠")
         st.info("""
         The faster a stroke is treated, the more likely the patient is to recover. 
@@ -265,7 +265,6 @@ def main():
         by enabling timely lifestyle changes and medical intervention.
         """)
 
-        # 5. Prevention Tips (Green/Calming)
         st.subheader("Lower Your Risk Today")
         st.success("""
         - **Control Blood Pressure:** Keep it in a healthy range.
@@ -283,9 +282,8 @@ def main():
     with tab2:
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
-        # --- INPUT FORM ---
+        # Form
         st.subheader("Patient Info")
-        
         age = st.number_input("Age", min_value=0, max_value=120, value=None, placeholder="e.g. 45")
         gender = st.selectbox("Gender", ["Male", "Female"], index=None, placeholder="Select Gender")
         ever_married = st.selectbox("Ever Married?", ["Yes", "No"], index=None, placeholder="Select Status")
@@ -299,7 +297,7 @@ def main():
         work_display = st.selectbox("Work Type", list(WORK_TYPE_MAP.keys()), index=None, placeholder="Select Work Type")
         avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=None, placeholder="e.g. 95.0")
 
-        # --- PREDICT BUTTON ---
+        # Button & Logic
         if st.button("Analyze Stroke Risk"):
             required_fields = [age, gender, ever_married, residence, bmi, hypertension, heart_disease, smoking_display, work_display, avg_glucose_level]
             
@@ -345,7 +343,7 @@ def main():
                         "Glucose": avg_glucose_level
                     }
         
-        # --- DISPLAY RESULT ---
+        # Result Display Tab 2
         if st.session_state['prediction_done']:
             st.markdown("---")
             st.subheader("Prediction Result")
@@ -358,7 +356,6 @@ def main():
             else:
                 st.success(f"🟢 Low Stroke Risk Detected\n\nProbability: {prob:.2%}")
                 st.write("Your metrics are within a safe range. Maintain a healthy lifestyle.")
-                
             st.info("👉 Check the **Personalized Result** tab for Visual Analytics.")
 
     # ====================================================
@@ -372,11 +369,10 @@ def main():
             prob = st.session_state['probability']
             user_data = st.session_state['user_input']
             
-            # GRAFIK 1: GAUGE
+            # Gauge Chart
             col_graph1, col_graph2 = st.columns([1, 1])
             with col_graph1:
                 st.markdown("**Risk Probability Gauge**")
-                
                 fig_gauge = go.Figure(go.Indicator(
                     mode = "gauge+number",
                     value = prob * 100,
@@ -403,7 +399,7 @@ def main():
                 fig_gauge.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=300, margin=dict(l=30, r=30, t=50, b=30))
                 st.plotly_chart(fig_gauge, use_container_width=True)
 
-            # GRAFIK 2: BAR CHART
+            # Bar Chart
             with col_graph2:
                 st.markdown("**Your Metrics vs Healthy Average**")
                 categories = ['BMI', 'Glucose', 'Age']
@@ -414,7 +410,6 @@ def main():
                     go.Bar(name='Your Data', x=categories, y=user_values, marker_color='#38bdf8'),
                     go.Bar(name='Healthy Avg', x=categories, y=healthy_values, marker_color='#94a3b8')
                 ])
-                
                 fig_bar.update_layout(
                     barmode='group', 
                     paper_bgcolor='rgba(0,0,0,0)', 
@@ -448,15 +443,12 @@ def main():
                 - **Maintenance:** Continue your current diet and exercise routine.
                 """)
         else:
-            st.markdown(
-                """
+            st.markdown("""
                 <div style='background-color: #1e293b; padding: 20px; border-radius: 10px; border: 1px solid #334155; text-align: center;'>
                     <h4 style='color: #cbd5e1;'>No Analysis Data Found</h4>
                     <p style='color: #94a3b8;'>Please go to the <b>Prediction</b> tab and fill out the form to generate personalized results.</p>
                 </div>
-                """, 
-                unsafe_allow_html=True
-            )
+            """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
