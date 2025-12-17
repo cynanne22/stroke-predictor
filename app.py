@@ -51,8 +51,9 @@ st.markdown("""
             background-color: transparent !important;
         }
         
-        p {
-            color: #e2e8f0;
+        /* REVISI 3: Menambahkan 'li' agar bullet points menjadi terang */
+        p, li {
+            color: #e2e8f0 !important;
             font-size: 16px;
             line-height: 1.6;
         }
@@ -339,6 +340,8 @@ def main():
             col_graph1, col_graph2 = st.columns([1, 1])
             with col_graph1:
                 st.markdown("**Risk Probability Gauge**")
+                
+                # REVISI 1: Menambahkan Threshold Line (Jarum)
                 fig_gauge = go.Figure(go.Indicator(
                     mode = "gauge+number",
                     value = prob * 100,
@@ -355,6 +358,12 @@ def main():
                             {'range': [40, 70], 'color': "#f59e0b"},
                             {'range': [70, 100], 'color': "#ef4444"}
                         ],
+                        # JARUM INDIKATOR
+                        'threshold': {
+                            'line': {'color': "white", 'width': 5},
+                            'thickness': 0.8,
+                            'value': prob * 100
+                        }
                     }
                 ))
                 fig_gauge.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=300, margin=dict(l=30, r=30, t=50, b=30))
@@ -371,11 +380,28 @@ def main():
                     go.Bar(name='Your Data', x=categories, y=user_values, marker_color='#38bdf8'),
                     go.Bar(name='Healthy Avg', x=categories, y=healthy_values, marker_color='#94a3b8')
                 ])
-                fig_bar.update_layout(barmode='group', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=300, margin=dict(l=20, r=20, t=50, b=20), legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
+                
+                # REVISI 2: Menambahkan warna font Legend menjadi Putih
+                fig_bar.update_layout(
+                    barmode='group', 
+                    paper_bgcolor='rgba(0,0,0,0)', 
+                    plot_bgcolor='rgba(0,0,0,0)', 
+                    font={'color': "white"}, 
+                    height=300, 
+                    margin=dict(l=20, r=20, t=50, b=20), 
+                    legend=dict(
+                        orientation="h", 
+                        yanchor="bottom", y=1.02, 
+                        xanchor="right", x=1,
+                        font=dict(color="white") # Legend Putih
+                    )
+                )
                 st.plotly_chart(fig_bar, use_container_width=True)
 
             st.markdown("---")
             st.write("### AI-Generated Recommendations")
+            
+            # REVISI 3: Tulisan (Bullet Points) otomatis terang karena CSS "li {color: #e2e8f0}"
             if prob > 0.5:
                 st.warning("Based on the analysis, your risk profile is elevated.")
                 st.markdown("""
