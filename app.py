@@ -203,19 +203,15 @@ def main():
     # --- SIDEBAR: LOGO & ABOUT ---
     with st.sidebar:
         try:
-            # Layout Kolom untuk Logo Center
             col_l, col_center, col_r = st.columns([0.1, 0.8, 0.1])
             with col_center:
-                # UPDATED FILENAME: logo.jpeg
                 img = Image.open("logo.jpeg")
                 st.image(img, use_container_width=True)
-            
         except Exception as e:
-            st.warning("Logo not found. Please upload 'logo.jpeg'.")
+            st.warning("Logo not found.")
         
         st.markdown("---")
         
-        # REVISI: Mengganti st.info dengan custom HTML agar font bisa dikecilkan (12px)
         st.markdown("""
             <div style='font-size: 12px; color: #cbd5e1; background-color: #1e293b; padding: 10px; border-radius: 5px; line-height: 1.4; border-left: 3px solid #38bdf8;'>
                 <strong>Disclaimer:</strong> This tool provides risk estimation based on statistical models and should not replace professional medical diagnosis.
@@ -223,10 +219,7 @@ def main():
         """, unsafe_allow_html=True)
 
     # --- MAIN CONTENT ---
-    # 1. Judul Utama
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
-    
-    # 2. Sub-Judul
     st.markdown("<h3 style='margin-top: 0px !important; padding-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
 
     # Init Session State
@@ -248,7 +241,6 @@ def main():
     with tab1:
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
-        # Hero Section
         st.subheader("What is a Stroke?")
         st.write("""
         A stroke occurs when the blood supply to part of your brain is interrupted or reduced, 
@@ -258,7 +250,6 @@ def main():
         
         st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
-        # F.A.S.T.
         st.subheader("Know the Warning Signs (:red[F.A.S.T.])")
         col1, col2, col3, col4 = st.columns(4)
         with col1:
@@ -276,7 +267,6 @@ def main():
 
         st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
-        # Risk Factors
         st.subheader("Risk Factors")
         risk_c1, risk_c2 = st.columns(2)
         with risk_c1:
@@ -299,7 +289,6 @@ def main():
 
         st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
-        # Why Early Detection & Prevention
         st.subheader("Time is Brain 🧠")
         st.info("""
         The faster a stroke is treated, the more likely the patient is to recover. 
@@ -324,7 +313,6 @@ def main():
     with tab2:
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
-        # Form
         st.subheader("Patient Info")
         age = st.number_input("Age", min_value=0, max_value=120, value=None, placeholder="e.g. 45")
         gender = st.selectbox("Gender", ["Male", "Female"], index=None, placeholder="Select Gender")
@@ -339,7 +327,6 @@ def main():
         work_display = st.selectbox("Work Type", list(WORK_TYPE_MAP.keys()), index=None, placeholder="Select Work Type")
         avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=None, placeholder="e.g. 95.0")
 
-        # Button & Logic
         if st.button("Analyze Stroke Risk"):
             required_fields = [age, gender, ever_married, residence, bmi, hypertension, heart_disease, smoking_display, work_display, avg_glucose_level]
             
@@ -385,7 +372,6 @@ def main():
                         "Glucose": avg_glucose_level
                     }
         
-        # Result Display Tab 2
         if st.session_state['prediction_done']:
             st.markdown("---")
             st.subheader("Prediction Result")
@@ -471,19 +457,57 @@ def main():
             st.markdown("---")
             st.write("### AI-Generated Recommendations")
             
-            if prob > 0.5:
-                st.warning("Based on the analysis, your risk profile is elevated.")
+            # --- TIERED RECOMMENDATION LOGIC ---
+            
+            # 1. LOW RISK (0 - 40%)
+            if prob < 0.4:
+                st.success("✅ **Result: Low Risk – Optimal Health Maintenance**")
+                st.markdown("**Overview:**")
+                st.write("Great news! Your profile indicates a healthy cardiovascular system with minimal risk factors. While your current risk is low, your goal now is consistency. Stroke prevention is a lifelong commitment, not a one-time achievement.")
+                
+                st.markdown("**Action Plan:**")
                 st.markdown("""
-                - **Primary Concern:** Your calculated probability is in the higher range.
-                - **Comparison:** Check the bar chart. If your Glucose or BMI is significantly higher than the 'Healthy Avg', focus on lowering that metric.
-                - **Action:** Consult a specialist immediately.
+                - **🥗 Nutrition:** Focus on "preventative nutrition." Maintain a diet rich in antioxidants, fiber, and Omega-3 fatty acids (like salmon or walnuts) to protect blood vessels.
+                - **🏃 Physical Maintenance:** Keep your body moving. Even if you are busy, ensure you get at least 30 minutes of walking or light activity daily to keep blood circulation flowing smoothly.
+                - **🧘 Mental Well-being:** Stress can silently raise blood pressure. Continue practicing stress-management techniques like deep breathing, meditation, or simply taking time for hobbies.
+                - **📅 Routine Monitoring:** Even with low risk, don’t skip your annual medical check-up. Track your blood pressure once every few months to ensure it remains stable.
                 """)
+
+            # 2. MEDIUM RISK (40% - 70%)
+            elif prob < 0.7:
+                st.warning("⚠️ **Result: Medium Risk – Warning Signs Detected**")
+                st.markdown("**Overview:**")
+                st.write("Your analysis shows several indicators that need attention. You are in the \"warning zone.\" This is actually a good opportunity—by acting now, you can reverse these risk factors before they become severe issues.")
+                
+                st.markdown("**Action Plan:**")
+                st.markdown("""
+                - **🥑 Targeted Diet Change:** It’s time to get specific. Cut down on processed foods, sugary drinks, and excessive red meat. Shift towards the Mediterranean Diet (rich in olive oil, veggies, and fish) which is proven to support heart health.
+                - **⚖️ Weight Management:** If your BMI is above average, losing even 5-10% of your body weight can significantly lower your stroke risk and blood pressure.
+                - **🚴 Active Lifestyle:** Move beyond just "walking." Try to incorporate moderate cardio that raises your heart rate (like jogging, swimming, or cycling) at least 3-4 times a week.
+                - **📝 Habit Audit:** Identify one major bad habit (e.g., occasional smoking, late-night snacking, or sedentary weekends) and commit to eliminating it this month.
+                """)
+
+            # 3. HIGH RISK (> 70%)
             else:
-                st.success("Your risk profile is currently stable.")
+                st.error("🚨 **Result: High Risk – Critical Action Required**")
+                st.markdown("**Overview:**")
+                st.write("This result indicates that multiple strong risk factors are present. This is a serious alert. Your cardiovascular system is under stress, and without immediate changes, the likelihood of a stroke or heart event is significant.")
+                
+                st.markdown("**Action Plan:**")
                 st.markdown("""
-                - **Comparison:** Your metrics align well with healthy averages.
-                - **Maintenance:** Continue your current diet and exercise routine.
+                - **👨‍⚕️ Medical Intervention:** **Do not ignore this.** Schedule an appointment with a cardiologist or general practitioner this week. Share this risk assessment with them to discuss medication or treatment plans.
+                - **📉 Strict Monitoring:** Monitor your blood pressure daily. Keep a log of your numbers to show your doctor. If your BP exceeds 140/90 consistently, seek medical help.
+                - **🆘 Emergency Plan:** Educate yourself and your family members about the **F.A.S.T.** signs (Face drooping, Arm weakness, Speech difficulty). Ensure everyone knows what to do in an emergency.
+                - **🛑 Radical Lifestyle Reset:**
+                    - **Zero Tolerance:** If you smoke, stop immediately.
+                    - **Diet:** Switch to a strict low-sodium, heart-healthy diet immediately.
+                    - **Support System:** Tell a family member or friend about this result so they can support you in making these difficult but necessary lifestyle changes.
                 """)
+
+            # DISCLAIMER DI BAWAH REKOMENDASI
+            st.markdown("---")
+            st.caption("This AI-powered assessment provides an estimation based on your inputs and implies statistical probability, not a definitive medical prediction. Please consult a healthcare professional for clinical diagnosis.")
+
         else:
             st.markdown("""
                 <div style='background-color: #1e293b; padding: 20px; border-radius: 10px; border: 1px solid #334155; text-align: center;'>
