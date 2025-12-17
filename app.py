@@ -71,51 +71,58 @@ st.markdown("""
            CUSTOM INPUT BOX STYLING
         ---------------------------------------------------- */
         
+        /* Reset background container */
         .stSelectbox, .stNumberInput, .stTextInput {
             background-color: transparent !important;
             border: none !important;
         }
 
-        /* 1. Box Dropdown & Input Container */
+        /* 1. Box Dropdown & Input */
         div[data-baseweb="select"] > div, 
         div[data-baseweb="input"] {
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
-            /* REVISI: Mengubah warna teks utama dalam box menjadi Abu Terang (#94a3b8) 
-               agar "Select Gender" warnanya sama dengan "e.g. 45" */
-            color: #94a3b8 !important; 
+            color: white !important; /* Warna teks yang sudah diketik/dipilih */
         }
 
-        /* 2. Warna Panah Dropdown (Arrow) - PUTIH (Sama kayak + -) */
-        div[data-baseweb="select"] svg {
-            fill: white !important;
-        }
+        /* 2. REVISI: Placeholder Text (e.g. 45, Select Gender) 
+           Warna Abu Terang (#94a3b8) - Terlihat jelas tapi beda dgn Label */
         
-        /* 3. Placeholder Text untuk Input Angka (e.g. 45) */
+        /* Untuk Input Angka (NumberInput) */
         input::placeholder {
             color: #94a3b8 !important;
             opacity: 1 !important; 
         }
         
-        /* 4. Memastikan teks di dalam Dropdown (baik placeholder maupun nilai) berwarna konsisten */
+        /* Untuk Dropdown (Selectbox) - Placeholder text */
         div[data-baseweb="select"] span {
-            color: #94a3b8 !important; 
+            color: #94a3b8 !important; /* Warna default (placeholder) */
         }
         
-        /* Styling internal input box (search text di dropdown) */
+        /* Memastikan nilai yang DIPILIH di dropdown berwarna PUTIH (bukan abu) */
+        div[data-baseweb="select"] div[aria-selected="true"] span {
+            color: white !important;
+        }
+
+        /* 3. REVISI: Warna Panah Dropdown (Arrow)
+           Disamakan dengan warna ikon +/- yaitu Putih/Terang */
+        div[data-baseweb="select"] svg {
+            fill: #e2e8f0 !important;
+        }
+
+        /* Styling internal input box */
         div[data-baseweb="input"] > div {
             background-color: transparent !important;
             color: white !important;
         }
         
-        /* Text angka yang diketik manual (agar tetap putih saat ngetik) */
         input[class] {
             color: white !important;
             background-color: transparent !important;
         }
 
-        /* Dropdown Popover (Pilihan Menu saat diklik) */
+        /* Dropdown Popover (Pilihan Menu) */
         div[data-baseweb="popover"] div {
             background-color: #1e293b !important;
             color: white !important;
@@ -164,7 +171,7 @@ MODEL_COLUMNS = [
     "smoking_status_formerly smoked", "smoking_status_never smoked", "smoking_status_smokes"
 ]
 
-# --- MAPPING ---
+# --- MAPPING: Tampilan Rapi -> Data Asli Model ---
 WORK_TYPE_MAP = {
     "Private Sector": "Private",
     "Self Employed": "Self-employed",
@@ -235,6 +242,7 @@ def main():
         # --- INPUT FORM ---
         st.subheader("Patient Info")
         
+        # value=None membuat kotak kosong, placeholder memberikan teks petunjuk
         age = st.number_input("Age", min_value=0, max_value=120, value=None, placeholder="e.g. 45")
         
         gender = st.selectbox("Gender", ["Male", "Female"], index=None, placeholder="Select Gender")
@@ -254,7 +262,7 @@ def main():
         # --- PREDICT BUTTON ---
         if st.button("Analyze Stroke Risk"):
             
-            # VALIDATION
+            # VALIDATION CHECK
             required_fields = [age, gender, ever_married, residence, bmi, hypertension, heart_disease, smoking_display, work_display, avg_glucose_level]
             
             if None in required_fields:
@@ -263,7 +271,7 @@ def main():
                 with st.spinner("Analyzing data..."):
                     time.sleep(0.5) 
                     
-                    # Mapping & Predict
+                    # Konversi & Prediksi
                     raw_work_type = WORK_TYPE_MAP[work_display]
                     raw_smoking_status = SMOKING_MAP[smoking_display]
 
