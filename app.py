@@ -51,9 +51,8 @@ st.markdown("""
             background-color: transparent !important;
         }
         
-        /* REVISI: Memastikan teks paragraf (p) dan bullet points (li) berwarna TERANG */
-        p, li {
-            color: #e2e8f0 !important;
+        p {
+            color: #e2e8f0;
             font-size: 16px;
             line-height: 1.6;
         }
@@ -78,31 +77,27 @@ st.markdown("""
             border: none !important;
         }
 
-        /* 1. Box Dropdown & Input Container */
+        /* 1. Box Dropdown & Input */
         div[data-baseweb="select"] > div, 
         div[data-baseweb="input"] {
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
-            /* REVISI: Mengubah warna teks utama dalam box menjadi Abu Terang (#94a3b8) 
-               agar "Select Gender" warnanya sama dengan "e.g. 45" */
-            color: #94a3b8 !important; 
+            color: white !important; /* Warna teks yang sudah diketik/dipilih */
         }
 
-        /* 2. Warna Panah Dropdown (Arrow) - PUTIH (Sama kayak + -) */
-        div[data-baseweb="select"] svg {
-            fill: white !important;
-        }
+        /* 2. REVISI: Placeholder Text (e.g. 45, Select Gender) 
+           Warna Abu Terang (#94a3b8) - Terlihat jelas tapi beda dgn Label */
         
-        /* 3. Placeholder Text untuk Input Angka (e.g. 45) */
+        /* Untuk Input Angka (NumberInput) */
         input::placeholder {
             color: #94a3b8 !important;
             opacity: 1 !important; 
         }
         
-        /* 4. Memastikan teks di dalam Dropdown (baik placeholder maupun nilai) berwarna konsisten */
+        /* Untuk Dropdown (Selectbox) - Placeholder text */
         div[data-baseweb="select"] span {
-            color: #94a3b8 !important; 
+            color: #94a3b8 !important; /* Warna default (placeholder) */
         }
         
         /* Memastikan nilai yang DIPILIH di dropdown berwarna PUTIH (bukan abu) */
@@ -110,19 +105,24 @@ st.markdown("""
             color: white !important;
         }
 
-        /* Styling internal input box (search text di dropdown) */
+        /* 3. REVISI: Warna Panah Dropdown (Arrow)
+           Disamakan dengan warna ikon +/- yaitu Putih/Terang */
+        div[data-baseweb="select"] svg {
+            fill: #e2e8f0 !important;
+        }
+
+        /* Styling internal input box */
         div[data-baseweb="input"] > div {
             background-color: transparent !important;
             color: white !important;
         }
         
-        /* Text angka yang diketik manual (agar tetap putih saat ngetik) */
         input[class] {
             color: white !important;
             background-color: transparent !important;
         }
 
-        /* Dropdown Popover (Pilihan Menu saat diklik) */
+        /* Dropdown Popover (Pilihan Menu) */
         div[data-baseweb="popover"] div {
             background-color: #1e293b !important;
             color: white !important;
@@ -212,7 +212,7 @@ def main():
     # TAB 1: HOME PAGE
     # ----------------------------------------------------
     with tab1:
-        st.markdown("<hr style='border: 1px solid #334155; margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         st.subheader("About Stroke")
         st.write("""
         A stroke occurs when blood supply to part of the brain is blocked or a blood vessel bursts. 
@@ -229,14 +229,6 @@ def main():
     # TAB 2: PREDICTION
     # ----------------------------------------------------
     with tab2:
-        st.markdown(
-            """
-            <p style='color: #cbd5e1; font-size: 16px; margin-top: 10px; margin-bottom: 10px; text-align: center;'>
-            Fill out the patient details below to analyze the risk profile.
-            </p>
-            """, 
-            unsafe_allow_html=True
-        )
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
         # --- INPUT FORM (DEFAULT EMPTY) ---
@@ -336,6 +328,7 @@ def main():
     # TAB 3: PERSONALIZED RESULT
     # ----------------------------------------------------
     with tab3:
+        st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         st.subheader("Personalized Insights")
         
         if st.session_state['prediction_done']:
@@ -346,8 +339,6 @@ def main():
             col_graph1, col_graph2 = st.columns([1, 1])
             with col_graph1:
                 st.markdown("**Risk Probability Gauge**")
-                
-                # REVISI: Menambahkan 'threshold' untuk membuat garis indikator
                 fig_gauge = go.Figure(go.Indicator(
                     mode = "gauge+number",
                     value = prob * 100,
@@ -364,11 +355,6 @@ def main():
                             {'range': [40, 70], 'color': "#f59e0b"},
                             {'range': [70, 100], 'color': "#ef4444"}
                         ],
-                        'threshold': {
-                            'line': {'color': "white", 'width': 5},
-                            'thickness': 0.8,
-                            'value': prob * 100
-                        }
                     }
                 ))
                 fig_gauge.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=300, margin=dict(l=30, r=30, t=50, b=30))
@@ -385,28 +371,11 @@ def main():
                     go.Bar(name='Your Data', x=categories, y=user_values, marker_color='#38bdf8'),
                     go.Bar(name='Healthy Avg', x=categories, y=healthy_values, marker_color='#94a3b8')
                 ])
-                
-                # REVISI: Menambahkan legend font color putih
-                fig_bar.update_layout(
-                    barmode='group', 
-                    paper_bgcolor='rgba(0,0,0,0)', 
-                    plot_bgcolor='rgba(0,0,0,0)', 
-                    font={'color': "white"}, 
-                    height=300, 
-                    margin=dict(l=20, r=20, t=50, b=20), 
-                    legend=dict(
-                        orientation="h", 
-                        yanchor="bottom", y=1.02, 
-                        xanchor="right", x=1,
-                        font=dict(color="white")
-                    )
-                )
+                fig_bar.update_layout(barmode='group', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=300, margin=dict(l=20, r=20, t=50, b=20), legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
                 st.plotly_chart(fig_bar, use_container_width=True)
 
             st.markdown("---")
             st.write("### AI-Generated Recommendations")
-            
-            # REVISI: Warna teks ini akan otomatis terang karena CSS "li" yang baru
             if prob > 0.5:
                 st.warning("Based on the analysis, your risk profile is elevated.")
                 st.markdown("""
