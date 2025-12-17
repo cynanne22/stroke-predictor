@@ -186,8 +186,7 @@ def main():
     col_l, col_m, col_r = st.columns([2.5, 2, 2.5]) 
     with col_m:
         try:
-            # Pastikan file 'cerebrocarelogo.jpg' ada di folder yang sama
-            st.image("cerebrocarelogo.jpg", use_container_width=True) 
+            st.image("CerebroCareLogo.jpg", use_container_width=True) 
         except Exception as e:
             st.warning("Logo not found. Please upload 'cerebrocarelogo.jpg'.")
 
