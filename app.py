@@ -457,7 +457,7 @@ def main():
             st.markdown("---")
             st.write("### AI-Generated Recommendations")
             
-            # --- TIERED RECOMMENDATION LOGIC ---
+            # --- TIERED RECOMMENDATION LOGIC (REVISI: Jarak Action Plan) ---
             
             # 1. LOW RISK (0 - 40%)
             if prob < 0.4:
@@ -465,6 +465,8 @@ def main():
                 st.markdown("**Overview:**")
                 st.write("Great news! Your profile indicates a healthy cardiovascular system with minimal risk factors. While your current risk is low, your goal now is consistency. Stroke prevention is a lifelong commitment, not a one-time achievement.")
                 
+                # Tambahkan margin-top agar berjarak dari Overview
+                st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
                 st.markdown("**Action Plan:**")
                 st.markdown("""
                 - **🥗 Nutrition:** Focus on "preventative nutrition." Maintain a diet rich in antioxidants, fiber, and Omega-3 fatty acids (like salmon or walnuts) to protect blood vessels.
@@ -479,6 +481,8 @@ def main():
                 st.markdown("**Overview:**")
                 st.write("Your analysis shows several indicators that need attention. You are in the \"warning zone.\" This is actually a good opportunity—by acting now, you can reverse these risk factors before they become severe issues.")
                 
+                # Tambahkan margin-top agar berjarak dari Overview
+                st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
                 st.markdown("**Action Plan:**")
                 st.markdown("""
                 - **🥑 Targeted Diet Change:** It’s time to get specific. Cut down on processed foods, sugary drinks, and excessive red meat. Shift towards the Mediterranean Diet (rich in olive oil, veggies, and fish) which is proven to support heart health.
@@ -493,6 +497,8 @@ def main():
                 st.markdown("**Overview:**")
                 st.write("This result indicates that multiple strong risk factors are present. This is a serious alert. Your cardiovascular system is under stress, and without immediate changes, the likelihood of a stroke or heart event is significant.")
                 
+                # Tambahkan margin-top agar berjarak dari Overview
+                st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
                 st.markdown("**Action Plan:**")
                 st.markdown("""
                 - **👨‍⚕️ Medical Intervention:** **Do not ignore this.** Schedule an appointment with a cardiologist or general practitioner this week. Share this risk assessment with them to discuss medication or treatment plans.
@@ -504,7 +510,6 @@ def main():
                     - **Support System:** Tell a family member or friend about this result so they can support you in making these difficult but necessary lifestyle changes.
                 """)
 
-            # DISCLAIMER DI BAWAH REKOMENDASI
             st.markdown("---")
             st.caption("This AI-powered assessment provides an estimation based on your inputs and implies statistical probability, not a definitive medical prediction. Please consult a healthcare professional for clinical diagnosis.")
 
