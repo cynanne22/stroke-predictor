@@ -203,29 +203,24 @@ def main():
     # --- SIDEBAR: LOGO & ABOUT ---
     with st.sidebar:
         try:
-            # Gunakan kolom agar logo terpusat
+            # Layout Kolom untuk Logo Center
             col_l, col_center, col_r = st.columns([0.1, 0.8, 0.1])
             with col_center:
-                # --- AUTO-CROP LOGIC ---
+                # UPDATED FILENAME: logo.jpeg
                 img = Image.open("logo.jpeg")
-                # Konversi ke RGBA agar bisa membaca transparansi
-                img = img.convert("RGBA")
-                # Dapatkan bounding box dari area yang BUKAN transparan (isinya)
-                bbox = img.getbbox()
-                if bbox:
-                    # Crop gambar sesuai bounding box (memotong margin kosong)
-                    img = img.crop(bbox)
-                
-                # Tampilkan gambar yang sudah di-crop
                 st.image(img, use_container_width=True)
             
-            # (Tulisan v1.0.0 SUDAH DIHAPUS sesuai request)
-            
         except Exception as e:
-            st.warning("Logo not found.")
+            st.warning("Logo not found. Please upload 'logo.jpeg'.")
         
         st.markdown("---")
-        st.info("**Disclaimer:** This tool provides risk estimation based on statistical models and should not replace professional medical diagnosis.")
+        
+        # REVISI: Mengganti st.info dengan custom HTML agar font bisa dikecilkan (12px)
+        st.markdown("""
+            <div style='font-size: 12px; color: #cbd5e1; background-color: #1e293b; padding: 10px; border-radius: 5px; line-height: 1.4; border-left: 3px solid #38bdf8;'>
+                <strong>Disclaimer:</strong> This tool provides risk estimation based on statistical models and should not replace professional medical diagnosis.
+            </div>
+        """, unsafe_allow_html=True)
 
     # --- MAIN CONTENT ---
     # 1. Judul Utama
