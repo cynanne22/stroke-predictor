@@ -51,7 +51,7 @@ st.markdown("""
             background-color: transparent !important;
         }
         
-        /* REVISI 3: Menambahkan 'li' agar bullet points menjadi terang */
+        /* Teks paragraf (p) dan bullet points (li) berwarna TERANG */
         p, li {
             color: #e2e8f0 !important;
             font-size: 16px;
@@ -72,47 +72,36 @@ st.markdown("""
            CUSTOM INPUT BOX STYLING
         ---------------------------------------------------- */
         
-        /* Reset background container */
         .stSelectbox, .stNumberInput, .stTextInput {
             background-color: transparent !important;
             border: none !important;
         }
 
-        /* 1. Box Dropdown & Input */
         div[data-baseweb="select"] > div, 
         div[data-baseweb="input"] {
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
-            color: white !important; /* Warna teks yang sudah diketik/dipilih */
+            color: white !important; /* Warna teks yang sudah diketik */
         }
 
-        /* 2. REVISI: Placeholder Text (e.g. 45, Select Gender) 
-           Warna Abu Terang (#94a3b8) - Terlihat jelas tapi beda dgn Label */
-        
-        /* Untuk Input Angka (NumberInput) */
+        /* Placeholder Text */
         input::placeholder {
             color: #94a3b8 !important;
             opacity: 1 !important; 
         }
-        
-        /* Untuk Dropdown (Selectbox) - Placeholder text */
         div[data-baseweb="select"] span {
-            color: #94a3b8 !important; /* Warna default (placeholder) */
+            color: #94a3b8 !important; /* Placeholder dropdown */
         }
-        
-        /* Memastikan nilai yang DIPILIH di dropdown berwarna PUTIH (bukan abu) */
         div[data-baseweb="select"] div[aria-selected="true"] span {
-            color: white !important;
+            color: white !important; /* Pilihan terpilih putih */
         }
 
-        /* 3. REVISI: Warna Panah Dropdown (Arrow)
-           Disamakan dengan warna ikon +/- yaitu Putih/Terang */
+        /* Warna Panah Dropdown - PUTIH */
         div[data-baseweb="select"] svg {
             fill: #e2e8f0 !important;
         }
 
-        /* Styling internal input box */
         div[data-baseweb="input"] > div {
             background-color: transparent !important;
             color: white !important;
@@ -123,13 +112,11 @@ st.markdown("""
             background-color: transparent !important;
         }
 
-        /* Dropdown Popover (Pilihan Menu) */
         div[data-baseweb="popover"] div {
             background-color: #1e293b !important;
             color: white !important;
         }
         
-        /* Tombol Analyze */
         .stButton>button {
             background-color: #0ea5e9;
             color: white;
@@ -150,6 +137,16 @@ st.markdown("""
             background-color: #1e293b;
             color: white;
             border: 1px solid #334155;
+        }
+        
+        /* Custom Card Style for FAST */
+        .fast-card {
+            background-color: #1e293b;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ef4444; /* Red border */
+            text-align: center;
+            height: 100%;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -172,7 +169,6 @@ MODEL_COLUMNS = [
     "smoking_status_formerly smoked", "smoking_status_never smoked", "smoking_status_smokes"
 ]
 
-# --- MAPPING: Tampilan Rapi -> Data Asli Model ---
 WORK_TYPE_MAP = {
     "Private Sector": "Private",
     "Self Employed": "Self-employed",
@@ -204,41 +200,100 @@ def main():
     if 'user_input' not in st.session_state:
         st.session_state['user_input'] = {}
 
-    # ==========================
-    # TABS
-    # ==========================
     tab1, tab2, tab3 = st.tabs(["🏠 Home Page", "🔍 Prediction", "📋 Personalized Result"])
 
-    # ----------------------------------------------------
-    # TAB 1: HOME PAGE
-    # ----------------------------------------------------
+    # ====================================================
+    # TAB 1: HOME PAGE (DASHBOARD CONTENT)
+    # ====================================================
     with tab1:
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
-        st.subheader("About Stroke")
+        
+        # 1. Hero Section: The Definition
+        st.subheader("What is a Stroke?")
         st.write("""
-        A stroke occurs when blood supply to part of the brain is blocked or a blood vessel bursts. 
-        It can cause lasting brain damage, long-term disability, or even death.
+        A stroke occurs when the blood supply to part of your brain is interrupted or reduced, 
+        preventing brain tissue from getting oxygen and nutrients. Brain cells begin to die in minutes. 
+        **It is a medical emergency where immediate treatment is crucial.**
         """)
-        st.subheader("Why Early Detection Matters?")
-        st.write("""
-        Risk factors like hypertension, heart disease, and lifestyle choices can be managed. 
-        **CerebroCare** analyzes these factors to estimate your risk profile.
-        """)
-        st.info("Navigate to the **Prediction** tab to start your assessment.")
+        
+        st.markdown("---")
 
-    # ----------------------------------------------------
+        # 2. The Golden Rule: F.A.S.T.
+        st.subheader("Know the Warning Signs (:red[F.A.S.T.])")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.markdown("### 😐 :red[F]ace")
+            st.caption("Does one side of the face droop or is it numb? Ask the person to smile.")
+        with col2:
+            st.markdown("### 💪 :red[A]rm")
+            st.caption("Is one arm weak or numb? Ask the person to raise both arms.")
+        with col3:
+            st.markdown("### 🗣️ :red[S]peech")
+            st.caption("Is speech slurred? Is the person unable to speak or hard to understand?")
+        with col4:
+            st.markdown("### 🚑 :red[T]ime")
+            st.caption("If someone shows any of these signs, call emergency services immediately.")
+
+        st.markdown("---")
+
+        # 3. Risk Factors (Medical vs Lifestyle)
+        st.subheader("Risk Factors")
+        
+        risk_c1, risk_c2 = st.columns(2)
+        
+        with risk_c1:
+            st.markdown("##### 🏥 Medical Risk Factors")
+            st.markdown("""
+            - High Blood Pressure (Hypertension)
+            - High Cholesterol
+            - Diabetes
+            - Obesity
+            - Family history of stroke
+            """)
+        
+        with risk_c2:
+            st.markdown("##### 🚬 Lifestyle Risk Factors")
+            st.markdown("""
+            - Smoking or tobacco use
+            - Physical inactivity
+            - Heavy alcohol consumption
+            - Unhealthy diet (high salt & saturated fats)
+            """)
+
+        st.markdown("---")
+
+        # 4. Why Early Detection Matters?
+        st.subheader("Time is Brain 🧠")
+        st.info("""
+        The faster a stroke is treated, the more likely the patient is to recover. 
+        Early detection of risk factors through AI analysis can help prevent a stroke before it happens 
+        by enabling timely lifestyle changes and medical intervention.
+        """)
+
+        # 5. Prevention Tips (Green/Calming)
+        st.subheader("Lower Your Risk Today")
+        st.success("""
+        - **Control Blood Pressure:** Keep it in a healthy range.
+        - **Stay Active:** Aim for at least 30 minutes of moderate exercise daily.
+        - **Eat Healthy:** Focus on fruits, vegetables, and whole grains; limit salt.
+        - **Quit Smoking:** Smoking thickens your blood and increases plaque buildup in arteries.
+        """)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center; color: #94a3b8;'>👇 <i>Go to the <b>Prediction</b> tab to check your profile</i> 👇</div>", unsafe_allow_html=True)
+
+    # ====================================================
     # TAB 2: PREDICTION
-    # ----------------------------------------------------
+    # ====================================================
     with tab2:
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
-        # --- INPUT FORM (DEFAULT EMPTY) ---
+        # --- INPUT FORM ---
         st.subheader("Patient Info")
         
-        # NOTE: value=None makes it empty, placeholder shows text hint
         age = st.number_input("Age", min_value=0, max_value=120, value=None, placeholder="e.g. 45")
-        
-        # NOTE: index=None makes dropdown empty/unselected
         gender = st.selectbox("Gender", ["Male", "Female"], index=None, placeholder="Select Gender")
         ever_married = st.selectbox("Ever Married?", ["Yes", "No"], index=None, placeholder="Select Status")
         residence = st.selectbox("Residence Type", ["Urban", "Rural"], index=None, placeholder="Select Residence Type")
@@ -247,31 +302,23 @@ def main():
         st.subheader("Medical History")
         hypertension = st.selectbox("Hypertension", ["Yes", "No"], index=None, placeholder="Select History")
         heart_disease = st.selectbox("Heart Disease", ["Yes", "No"], index=None, placeholder="Select History")
-        
         smoking_display = st.selectbox("Smoking Status", list(SMOKING_MAP.keys()), index=None, placeholder="Select Smoking Status")
         work_display = st.selectbox("Work Type", list(WORK_TYPE_MAP.keys()), index=None, placeholder="Select Work Type")
-        
         avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, value=None, placeholder="e.g. 95.0")
 
         # --- PREDICT BUTTON ---
         if st.button("Analyze Stroke Risk"):
-            
-            # 1. VALIDATION CHECK (PENTING!)
-            # Cek apakah ada input yang masih kosong (None)
             required_fields = [age, gender, ever_married, residence, bmi, hypertension, heart_disease, smoking_display, work_display, avg_glucose_level]
             
             if None in required_fields:
                 st.error("⚠ Please fill out all fields before analyzing.")
             else:
-                # Jika semua terisi, baru jalankan proses prediksi
                 with st.spinner("Analyzing data..."):
                     time.sleep(0.5) 
                     
-                    # Konversi Pilihan Tampilan -> Nilai Asli Dataset
                     raw_work_type = WORK_TYPE_MAP[work_display]
                     raw_smoking_status = SMOKING_MAP[smoking_display]
 
-                    # Create Input Dictionary
                     input_dict = {
                         "age": age,
                         "hypertension": 1 if hypertension == "Yes" else 0,
@@ -280,14 +327,11 @@ def main():
                         "avg_glucose_level": avg_glucose_level,
                         "bmi": bmi,
                         "gender_Male": 1 if gender == "Male" else 0,
-                        
                         "work_type_Never_worked": 1 if raw_work_type == "Never_worked" else 0,
                         "work_type_Private": 1 if raw_work_type == "Private" else 0,
                         "work_type_Self-employed": 1 if raw_work_type == "Self-employed" else 0,
                         "work_type_children": 1 if raw_work_type == "children" else 0,
-                        
                         "Residence_type_Urban": 1 if residence == "Urban" else 0,
-                        
                         "smoking_status_formerly smoked": 1 if raw_smoking_status == "formerly smoked" else 0,
                         "smoking_status_never smoked": 1 if raw_smoking_status == "never smoked" else 0,
                         "smoking_status_smokes": 1 if raw_smoking_status == "smokes" else 0,
@@ -302,7 +346,6 @@ def main():
                     st.session_state['prediction_done'] = True
                     st.session_state['prediction_result'] = prediction
                     st.session_state['probability'] = probability
-                    
                     st.session_state['user_input'] = {
                         "Age": age,
                         "BMI": bmi,
@@ -325,9 +368,9 @@ def main():
                 
             st.info("👉 Check the **Personalized Result** tab for Visual Analytics.")
 
-    # ----------------------------------------------------
+    # ====================================================
     # TAB 3: PERSONALIZED RESULT
-    # ----------------------------------------------------
+    # ====================================================
     with tab3:
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         st.subheader("Personalized Insights")
@@ -341,7 +384,6 @@ def main():
             with col_graph1:
                 st.markdown("**Risk Probability Gauge**")
                 
-                # REVISI 1: Menambahkan Threshold Line (Jarum)
                 fig_gauge = go.Figure(go.Indicator(
                     mode = "gauge+number",
                     value = prob * 100,
@@ -358,7 +400,6 @@ def main():
                             {'range': [40, 70], 'color': "#f59e0b"},
                             {'range': [70, 100], 'color': "#ef4444"}
                         ],
-                        # JARUM INDIKATOR
                         'threshold': {
                             'line': {'color': "white", 'width': 5},
                             'thickness': 0.8,
@@ -381,7 +422,6 @@ def main():
                     go.Bar(name='Healthy Avg', x=categories, y=healthy_values, marker_color='#94a3b8')
                 ])
                 
-                # REVISI 2: Menambahkan warna font Legend menjadi Putih
                 fig_bar.update_layout(
                     barmode='group', 
                     paper_bgcolor='rgba(0,0,0,0)', 
@@ -393,7 +433,7 @@ def main():
                         orientation="h", 
                         yanchor="bottom", y=1.02, 
                         xanchor="right", x=1,
-                        font=dict(color="white") # Legend Putih
+                        font=dict(color="white")
                     )
                 )
                 st.plotly_chart(fig_bar, use_container_width=True)
@@ -401,7 +441,6 @@ def main():
             st.markdown("---")
             st.write("### AI-Generated Recommendations")
             
-            # REVISI 3: Tulisan (Bullet Points) otomatis terang karena CSS "li {color: #e2e8f0}"
             if prob > 0.5:
                 st.warning("Based on the analysis, your risk profile is elevated.")
                 st.markdown("""
