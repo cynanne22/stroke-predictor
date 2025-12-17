@@ -138,16 +138,6 @@ st.markdown("""
             color: white;
             border: 1px solid #334155;
         }
-        
-        /* Custom Card Style for FAST */
-        .fast-card {
-            background-color: #1e293b;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #ef4444; /* Red border */
-            text-align: center;
-            height: 100%;
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -206,6 +196,7 @@ def main():
     # TAB 1: HOME PAGE (DASHBOARD CONTENT)
     # ====================================================
     with tab1:
+        # Garis pembatas custom dengan margin rapat (jarak atas/bawah kecil)
         st.markdown("<hr style='border: 1px solid #334155; margin-top: 0px; margin-bottom: 20px;'>", unsafe_allow_html=True)
         
         # 1. Hero Section: The Definition
@@ -216,7 +207,8 @@ def main():
         **It is a medical emergency where immediate treatment is crucial.**
         """)
         
-        st.markdown("---")
+        # Mengganti '---' default dengan custom HR yang margin-nya lebih kecil (15px)
+        st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
         # 2. The Golden Rule: F.A.S.T.
         st.subheader("Know the Warning Signs (:red[F.A.S.T.])")
@@ -236,15 +228,16 @@ def main():
             st.markdown("### 🚑 :red[T]ime")
             st.caption("If someone shows any of these signs, call emergency services immediately.")
 
-        st.markdown("---")
+        st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
         # 3. Risk Factors (Medical vs Lifestyle)
         st.subheader("Risk Factors")
         
         risk_c1, risk_c2 = st.columns(2)
         
+        # REVISI: Menggunakan <h4> dengan warna #cbd5e1 agar lebih terang dan jelas
         with risk_c1:
-            st.markdown("##### 🏥 Medical Risk Factors")
+            st.markdown("<h4 style='color: #cbd5e1; margin-bottom: 10px;'>🏥 Medical Risk Factors</h4>", unsafe_allow_html=True)
             st.markdown("""
             - High Blood Pressure (Hypertension)
             - High Cholesterol
@@ -254,7 +247,7 @@ def main():
             """)
         
         with risk_c2:
-            st.markdown("##### 🚬 Lifestyle Risk Factors")
+            st.markdown("<h4 style='color: #cbd5e1; margin-bottom: 10px;'>🚬 Lifestyle Risk Factors</h4>", unsafe_allow_html=True)
             st.markdown("""
             - Smoking or tobacco use
             - Physical inactivity
@@ -262,7 +255,7 @@ def main():
             - Unhealthy diet (high salt & saturated fats)
             """)
 
-        st.markdown("---")
+        st.markdown("<hr style='border: 1px solid #334155; margin: 15px 0;'>", unsafe_allow_html=True)
 
         # 4. Why Early Detection Matters?
         st.subheader("Time is Brain 🧠")
