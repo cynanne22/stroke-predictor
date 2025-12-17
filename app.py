@@ -25,22 +25,18 @@ st.markdown("""
             background-color: #0f172a;
         }
 
-        /* -- SIDEBAR STYLING (REVISI) -- */
-        /* Mengubah warna sidebar agar GELAP (sama dengan main body) */
+        /* -- SIDEBAR STYLING -- */
         section[data-testid="stSidebar"] {
             background-color: #0f172a !important; 
-            border-right: 1px solid #1e293b; /* Sedikit border pemisah halus */
+            border-right: 1px solid #1e293b;
         }
         
-        /* Memastikan teks di sidebar tetap terang */
         section[data-testid="stSidebar"] p, 
         section[data-testid="stSidebar"] span,
         section[data-testid="stSidebar"] div {
             color: #cbd5e1 !important;
         }
 
-        /* LOGO STYLING (NATURAL) */
-        /* Menghapus border/lingkaran paksa. Logo PNG akan tampil natural */
         section[data-testid="stSidebar"] img {
             margin-top: 20px;
             margin-bottom: 20px;
@@ -207,15 +203,26 @@ def main():
     # --- SIDEBAR: LOGO & ABOUT ---
     with st.sidebar:
         try:
-            # Gunakan kolom agar logo bisa diatur ukurannya dengan 'width' atau proporsi kolom
+            # Gunakan kolom agar logo terpusat
             col_l, col_center, col_r = st.columns([0.1, 0.8, 0.1])
             with col_center:
-                # Update Nama File Logo di sini
-                st.image("logoCerebro.png", use_container_width=True)
+                # --- AUTO-CROP LOGIC ---
+                img = Image.open("logoCerebro.png")
+                # Konversi ke RGBA agar bisa membaca transparansi
+                img = img.convert("RGBA")
+                # Dapatkan bounding box dari area yang BUKAN transparan (isinya)
+                bbox = img.getbbox()
+                if bbox:
+                    # Crop gambar sesuai bounding box (memotong margin kosong)
+                    img = img.crop(bbox)
+                
+                # Tampilkan gambar yang sudah di-crop
+                st.image(img, use_container_width=True)
             
-            st.markdown("<div style='text-align: center; color: #94a3b8; font-size: 14px; margin-top: 10px;'>v1.0.0 - AI Healthcare System</div>", unsafe_allow_html=True)
-        except:
-            pass 
+            # (Tulisan v1.0.0 SUDAH DIHAPUS sesuai request)
+            
+        except Exception as e:
+            st.warning("Logo not found.")
         
         st.markdown("---")
         st.info("**Disclaimer:** This tool provides risk estimation based on statistical models and should not replace professional medical diagnosis.")
