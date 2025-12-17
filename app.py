@@ -442,3 +442,37 @@ def main():
                     height=300, 
                     margin=dict(l=20, r=20, t=50, b=20), 
                     legend=dict(
+                        orientation="h", 
+                        yanchor="bottom", y=1.02, 
+                        xanchor="right", x=1,
+                        font=dict(color="white")
+                    )
+                )
+                st.plotly_chart(fig_bar, use_container_width=True)
+
+            st.markdown("---")
+            st.write("### AI-Generated Recommendations")
+            
+            if prob > 0.5:
+                st.warning("Based on the analysis, your risk profile is elevated.")
+                st.markdown("""
+                - **Primary Concern:** Your calculated probability is in the higher range.
+                - **Comparison:** Check the bar chart. If your Glucose or BMI is significantly higher than the 'Healthy Avg', focus on lowering that metric.
+                - **Action:** Consult a specialist immediately.
+                """)
+            else:
+                st.success("Your risk profile is currently stable.")
+                st.markdown("""
+                - **Comparison:** Your metrics align well with healthy averages.
+                - **Maintenance:** Continue your current diet and exercise routine.
+                """)
+        else:
+            st.markdown("""
+                <div style='background-color: #1e293b; padding: 20px; border-radius: 10px; border: 1px solid #334155; text-align: center;'>
+                    <h4 style='color: #cbd5e1;'>No Analysis Data Found</h4>
+                    <p style='color: #94a3b8;'>Please go to the <b>Prediction</b> tab and fill out the form to generate personalized results.</p>
+                </div>
+            """, unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    main()
