@@ -3,7 +3,7 @@ import pandas as pd
 import joblib
 import time
 import plotly.graph_objects as go
-from PIL import Image # Import library untuk olah gambar (opsional, tapi good practice)
+from PIL import Image
 
 # =======================
 # 1. Configuration & CSS
@@ -24,12 +24,13 @@ st.markdown("""
             background-color: #0f172a;
         }
 
+        /* Styling Judul Utama */
         .main-title {
             font-size: 3.5rem;
             font-weight: 700;
             color: #38bdf8;
             text-align: center;
-            margin-bottom: -20px !important; 
+            margin-bottom: -10px !important; /* Jarak ke sub-judul dirapatkan */
             padding-bottom: 0px !important;
             font-family: 'Roboto', sans-serif;
         }
@@ -85,7 +86,7 @@ st.markdown("""
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
-            color: #94a3b8 !important; /* Warna teks isi */
+            color: #94a3b8 !important;
         }
 
         /* Placeholder & Text Colors */
@@ -140,6 +141,11 @@ st.markdown("""
             color: white;
             border: 1px solid #334155;
         }
+
+        /* Sidebar Styling (Optional cleanup) */
+        section[data-testid="stSidebar"] {
+            background-color: #1e293b; /* Sedikit lebih terang dari main body */
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -180,16 +186,20 @@ SMOKING_MAP = {
 # 3. MAIN APP
 # =======================
 def main():
-    # --- MENAMPILKAN LOGO (CENTERED) ---
-    # Menggunakan 3 kolom untuk membuat logo berada di tengah
-    # Rasio [2, 1, 2] atau [3, 2, 3] bisa diatur sesuai ukuran logo
-    col_l, col_m, col_r = st.columns([2.5, 2, 2.5]) 
-    with col_m:
+    
+    # --- SIDEBAR: LOGO & ABOUT ---
+    with st.sidebar:
         try:
-            st.image("CerebroCareLogo.jpg", use_container_width=True) 
-        except Exception as e:
-            st.warning("Logo not found. Please upload 'cerebrocarelogo.jpg'.")
+            # Pastikan nama file sesuai (Case Sensitive!)
+            st.image("CerebroCareLogo.jpg", use_container_width=True)
+            st.markdown("<div style='text-align: center; color: #94a3b8; font-size: 14px;'>v1.0.0 - AI Healthcare System</div>", unsafe_allow_html=True)
+        except:
+            pass # Kalau logo tidak ada, diam saja
+        
+        st.markdown("---")
+        st.info("**Disclaimer:** This tool provides risk estimation based on statistical models and should not replace professional medical diagnosis.")
 
+    # --- MAIN CONTENT ---
     # 1. Judul Utama
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
