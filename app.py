@@ -207,7 +207,7 @@ def main():
             col_l, col_center, col_r = st.columns([0.1, 0.8, 0.1])
             with col_center:
                 # --- AUTO-CROP LOGIC ---
-                img = Image.open("logoCerebro.png")
+                img = Image.open("logo.jpeg")
                 # Konversi ke RGBA agar bisa membaca transparansi
                 img = img.convert("RGBA")
                 # Dapatkan bounding box dari area yang BUKAN transparan (isinya)
