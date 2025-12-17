@@ -3,6 +3,7 @@ import pandas as pd
 import joblib
 import time
 import plotly.graph_objects as go
+from PIL import Image # Import library untuk olah gambar (opsional, tapi good practice)
 
 # =======================
 # 1. Configuration & CSS
@@ -28,17 +29,15 @@ st.markdown("""
             font-weight: 700;
             color: #38bdf8;
             text-align: center;
-            /* REVISI 1: Mengurangi jarak ke bawah secara ekstrem dengan nilai negatif 
-               agar menempel dengan sub-judul */
             margin-bottom: -20px !important; 
             padding-bottom: 0px !important;
             font-family: 'Roboto', sans-serif;
         }
         
-        /* REVISI 2: Memperbesar Font Navigation Bar (Tabs) */
+        /* Font Navigation Bar (Tabs) */
         button[data-baseweb="tab"] {
             color: #cbd5e1; 
-            font-size: 20px !important; /* Diperbesar dari 16px ke 20px */
+            font-size: 20px !important;
             font-weight: 600;
         }
         button[data-baseweb="tab"][aria-selected="true"] {
@@ -86,7 +85,7 @@ st.markdown("""
             background-color: #1e293b !important;
             border: 1px solid #334155 !important;
             border-radius: 8px !important;
-            color: white !important;
+            color: #94a3b8 !important; /* Warna teks isi */
         }
 
         /* Placeholder & Text Colors */
@@ -181,10 +180,21 @@ SMOKING_MAP = {
 # 3. MAIN APP
 # =======================
 def main():
+    # --- MENAMPILKAN LOGO (CENTERED) ---
+    # Menggunakan 3 kolom untuk membuat logo berada di tengah
+    # Rasio [2, 1, 2] atau [3, 2, 3] bisa diatur sesuai ukuran logo
+    col_l, col_m, col_r = st.columns([2.5, 2, 2.5]) 
+    with col_m:
+        try:
+            # Pastikan file 'cerebrocarelogo.jpg' ada di folder yang sama
+            st.image("cerebrocarelogo.jpg", use_container_width=True) 
+        except Exception as e:
+            st.warning("Logo not found. Please upload 'cerebrocarelogo.jpg'.")
+
     # 1. Judul Utama
     st.markdown('<div class="main-title">CerebroCare</div>', unsafe_allow_html=True)
     
-    # 2. Sub-Judul (REVISI 1: margin-top dibuat 0px atau sedikit negatif agar nempel ke atas)
+    # 2. Sub-Judul
     st.markdown("<h3 style='margin-top: 0px !important; padding-top: 0px !important; text-align: center;'>AI-Powered Stroke Risk Assessment</h3>", unsafe_allow_html=True)
 
     # Init Session State
