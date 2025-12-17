@@ -24,18 +24,16 @@ st.markdown("""
             background-color: #0f172a;
         }
 
-        /* Styling Judul Utama */
         .main-title {
             font-size: 3.5rem;
             font-weight: 700;
             color: #38bdf8;
             text-align: center;
-            margin-bottom: -10px !important; /* Jarak ke sub-judul dirapatkan */
+            margin-bottom: -20px !important; 
             padding-bottom: 0px !important;
             font-family: 'Roboto', sans-serif;
         }
         
-        /* Font Navigation Bar (Tabs) */
         button[data-baseweb="tab"] {
             color: #cbd5e1; 
             font-size: 20px !important;
@@ -46,7 +44,6 @@ st.markdown("""
             border-bottom-color: #38bdf8;
         }
         
-        /* Subheaders styling */
         h3, .stHeader, .stSubheader {
             color: #f1f5f9 !important;
             font-size: 1.5rem !important;
@@ -56,14 +53,12 @@ st.markdown("""
             background-color: transparent !important;
         }
         
-        /* Teks paragraf & list items */
         p, li {
             color: #e2e8f0 !important;
             font-size: 16px;
             line-height: 1.6;
         }
 
-        /* Label Widget */
         .stNumberInput label, 
         .stSelectbox label, 
         .stTextInput label,
@@ -89,7 +84,6 @@ st.markdown("""
             color: #94a3b8 !important;
         }
 
-        /* Placeholder & Text Colors */
         input::placeholder {
             color: #94a3b8 !important;
             opacity: 1 !important; 
@@ -119,7 +113,6 @@ st.markdown("""
             color: white !important;
         }
         
-        /* Button Styling */
         .stButton>button {
             background-color: #0ea5e9;
             color: white;
@@ -142,9 +135,16 @@ st.markdown("""
             border: 1px solid #334155;
         }
 
-        /* Sidebar Styling (Optional cleanup) */
-        section[data-testid="stSidebar"] {
-            background-color: #1e293b; /* Sedikit lebih terang dari main body */
+        /* --- LOGO STYLING (BARU) --- */
+        /* Membuat gambar di sidebar jadi bulat & ada border */
+        section[data-testid="stSidebar"] img {
+            border-radius: 50%;         /* Membuat bulat */
+            border: 3px solid #38bdf8;  /* Border warna Cyan */
+            padding: 2px;               /* Jarak antara gambar & border */
+            background-color: white;    /* Pastikan background putih bersih */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -190,11 +190,16 @@ def main():
     # --- SIDEBAR: LOGO & ABOUT ---
     with st.sidebar:
         try:
-            # Pastikan nama file sesuai (Case Sensitive!)
-            st.image("CerebroCareLogo.jpg", use_container_width=True)
-            st.markdown("<div style='text-align: center; color: #94a3b8; font-size: 14px;'>v1.0.0 - AI Healthcare System</div>", unsafe_allow_html=True)
+            # Gunakan kolom untuk memusatkan logo di sidebar
+            # dan membuatnya tidak terlalu besar (menggunakan width)
+            col1, col2, col3 = st.columns([0.2, 0.6, 0.2])
+            with col2:
+                # Pastikan nama file benar (Case Sensitive!)
+                st.image("CerebroCareLogo.jpg", use_container_width=True)
+            
+            st.markdown("<div style='text-align: center; color: #94a3b8; font-size: 14px; margin-top: 10px;'>v1.0.0 - AI Healthcare System</div>", unsafe_allow_html=True)
         except:
-            pass # Kalau logo tidak ada, diam saja
+            pass 
         
         st.markdown("---")
         st.info("**Disclaimer:** This tool provides risk estimation based on statistical models and should not replace professional medical diagnosis.")
@@ -437,37 +442,3 @@ def main():
                     height=300, 
                     margin=dict(l=20, r=20, t=50, b=20), 
                     legend=dict(
-                        orientation="h", 
-                        yanchor="bottom", y=1.02, 
-                        xanchor="right", x=1,
-                        font=dict(color="white")
-                    )
-                )
-                st.plotly_chart(fig_bar, use_container_width=True)
-
-            st.markdown("---")
-            st.write("### AI-Generated Recommendations")
-            
-            if prob > 0.5:
-                st.warning("Based on the analysis, your risk profile is elevated.")
-                st.markdown("""
-                - **Primary Concern:** Your calculated probability is in the higher range.
-                - **Comparison:** Check the bar chart. If your Glucose or BMI is significantly higher than the 'Healthy Avg', focus on lowering that metric.
-                - **Action:** Consult a specialist immediately.
-                """)
-            else:
-                st.success("Your risk profile is currently stable.")
-                st.markdown("""
-                - **Comparison:** Your metrics align well with healthy averages.
-                - **Maintenance:** Continue your current diet and exercise routine.
-                """)
-        else:
-            st.markdown("""
-                <div style='background-color: #1e293b; padding: 20px; border-radius: 10px; border: 1px solid #334155; text-align: center;'>
-                    <h4 style='color: #cbd5e1;'>No Analysis Data Found</h4>
-                    <p style='color: #94a3b8;'>Please go to the <b>Prediction</b> tab and fill out the form to generate personalized results.</p>
-                </div>
-            """, unsafe_allow_html=True)
-
-if __name__ == "__main__":
-    main()
